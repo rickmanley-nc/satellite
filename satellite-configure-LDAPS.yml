@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: Copy ca.crt from IdM server to Satellite
+# scp /etc/ipa/ca.crt satellite.rnelson-demo.com:/root/
+
+    - name: Use 'install' to install the certificate into /etc/pki/tls/certs/ directory with the correct permissions.
+      command: /usr/bin/install /root/ca.crt /etc/pki/tls/certs/
+
+    - name: Enter the following command as root to trust the ca.crt certificate obtained from the LDAP server
+      command: ln -s ca.crt /etc/pki/tls/certs/$(openssl x509 -noout -hash -in /etc/pki/tls/certs/ca.crt).0
+
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+    - name: Add IdM as Authentication Source
+      command: hammer auth-source ldap create --name IdM --host {{ idm_hostname }} --port 636 --server-type free_ipa --account {{ idm_register_username }} --account-password {{ idm_register_password }} --base-dn {{ idm_base_suffix }} --organizations {{ satellite_organization }} --locations {{ satellite_location }} --usergroup-sync yes --attr-firstname givenName --attr-lastname sn --attr-login uid --attr-mail mail
+
+#api call to check box for LDAPS
+#api call to check box for automatically creating accounts in Satellite the first time someone logs in

@@ -1,0 +1,87 @@
+---
+#Satellite Configure section#
+satellite_admin_username: admin
+satellite_admin_password: redhat
+satellite_organization: RedHat
+satellite_location: RDU
+satellite_domain: rnelson-demo.com
+satellite_hostname: satellite.rnelson-demo.com
+satellite_manifest_filename: manifest-rnelson-sales.zip
+
+#not sure how to make this easy yet. Hammer doesn't do searching by subscription name. It only attaches by 'subscription-id'
+satellite_subscription_ids:
+  - 3
+  - 11
+
+satellite_repos:
+  - rhel-7-server-rpms
+  - rhel-server-rhscl-7-rpms
+  - rhel-7-server-satellite-6.2-rpms
+
+satellite_ports:
+  - '80/tcp'   # HTTP
+  - '443/tcp'  # HTTPS
+  - '5646/tcp' # qpid/Katello
+  - '5647/tcp' # qpid/Katello
+  - '5671/tcp' # amqp
+  - '5674/tcp' # amqp
+  - '8140/tcp' # Puppet
+  - '9090/tcp' # Foreman Smart Proxy / Capsule
+  - '53/tcp'   # DNS
+  - '53/udp'   # DNS
+  - '67/udp'   # DHCP
+  - '68/udp'   # DHCP
+  - '69/udp'   # TFTP
+  - '389/tcp'  # LDAP
+  - '636/tcp'  # LDAPS
+  - '88/tcp'   # Kerberos
+  - '464/tcp'  # Kerberos
+  - '123/udp'  # NTP
+
+
+#Laptop Configure section#
+#configure httpd, remove default welcome, copy over manifest, inventory-tower-initial-setup, inventory-tower, foreman.yml,
+laptop_hostname: laptop.rnelson-demo.com
+laptop_ip: 192.168.126.1
+
+
+
+#Tower Configure section
+tower_hostname: tower.rnelson-demo.com
+tower_ip:
+
+
+#IdM Configure Section
+idm_register_username: admin
+idm_register_password: redhatrocks
+idm_admin_password: redhatrocks
+idm_dir_admin_password: redhatrocks
+idm_hostname: idm.rnelson-demo.com
+idm_domain: rnelson-demo.com
+idm_realm: RNELSON-DEMO.COM
+idm_forward_ip: 192.168.126.1
+idm_base_suffix: dc=rnelson-demo,dc=com
+
+idm_ports:
+  - '80/tcp'   # HTTP
+  - '443/tcp'  # HTTPS
+  - '389/tcp'  # LDAP
+  - '636/tcp'  # LDAPS
+  - '88/tcp'   # Kerberos
+  - '464/tcp'  # Kerberos
+  - '123/udp'  # NTP
+  - '5646/tcp' # qpid/Katello
+  - '5647/tcp' # qpid/Katello
+  - '5671/tcp' # amqp
+  - '5674/tcp' # amqp
+  - '8140/tcp' # Puppet
+  - '9090/tcp' # Foreman Smart Proxy / Capsule
+  - '53/tcp'   # DNS
+  - '53/udp'   # DNS
+  - '67/udp'   # DHCP
+  - '68/udp'   # DHCP
+  - '69/udp'   # TFTP
+
+
+#CloudForms Configuration Section
+cloudforms_hostname: cloudforms.rnelson-demo.com

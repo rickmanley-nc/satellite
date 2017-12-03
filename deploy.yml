@@ -1,0 +1,8 @@
+---
+- hosts: all
+  name: Deploy image based off of clone
+  roles:
+    - deploy-satellite
+    - deploy-tower
+    - deploy-idm
+    - deploy-cloudforms

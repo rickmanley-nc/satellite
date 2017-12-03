@@ -1,0 +1,35 @@
+---
+- name: Copy Gold Image to /home/rnelson/Images/
+  command: cp -r /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
+  tags: satellite
+
+- name: Provision Gold Image as DEMO-Satellite
+  command: virt-install --name DEMO-Satellite --ram 12228 --vcpus 4 --network bridge=virbr3 --disk path=/home/rnelson/Images/DEMO-Satellite.qcow2 --import --noautoconsole
+  tags: satellite
+
+- name: Wait for SSH to come up on Satellite
+  local_action:
+    module: wait_for
+      host={{ satellite_hostname }}
+      port=22
+      delay=1
+      timeout=300
+  tags: satellite
+
+# 1. Create sat-isolated network with x.x.126.0/24
+# 2. Create VM: 4 vCPU, 12228 GB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
+# Configure static networking as
+# IP -  192.168.126.2
+# Netmask - 255.255.255.0
+# Gateway - 192.168.126.1
+# DNS - 192.168.126.1 (note: this is temporary. After we install Satellite, we'll change this to the IP of the Satellite as it will be running DNS)
+# 3. Ensure partition layout has just "/" at 120.8 GiB, "swap" at 4096 MiB, and "/boot" at 200 MiB
+# 4. Clone vm as gold image.
+
+# virsh suspend DEMO-Satellite
+# virt-clone --connect qemu:///system --original DEMO-Satellite --name GOLD-Satellite --file /home/rnelson/Images/GOLD-Satellite.qcow2
+# virsh resume DEMO-Satellite
+# virt-sysprep -d GOLD-Satellite --hostname satellite.rnelson-demo.com --root-password password:redhat
+# mv /home/rnelson/Images/GOLD-Satellite.qcow2 /home/rnelson/Images/original/
+# cp /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
+# virt-install --name DEMO-Satellite --ram 12228 --vcpus 4 --network bridge=virbr3 --disk path=/home/rnelson/Images/DEMO-Satellite.qcow2 --import --noautoconsole

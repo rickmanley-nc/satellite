@@ -1,0 +1,20 @@
+:foreman:
+  # Enable/disable foreman commands
+  :enable_module: true
+
+  # Your foreman server address
+  :host: 'https://{{ satellite_hostname }}'
+
+  # Credentials. You'll be asked for them interactively if you leave them blank here
+  :username: '{{ satellite_admin_username }}'
+  :password: '{{ satellite_admin_password}}'
+
+  # Check API documentation cache status on each request
+  #:refresh_cache: false
+
+  # API request timeout. Set to -1 for no timeout
+  #:request_timeout: 120 #seconds
+
+  # Follow API redirects. One of :never, :default, :always
+  # Value :default means RestClient default behaviour - follow only in GET and HEAD requests
+  #:follow_redirects: :never
