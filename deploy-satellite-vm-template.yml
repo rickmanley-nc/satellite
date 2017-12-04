@@ -1,11 +1,11 @@
 ---
 - name: Copy Gold Image to /home/rnelson/Images/
   command: cp -r /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
-  tags: satellite
+  tags: deploy
 
 - name: Provision Gold Image as DEMO-Satellite
   command: virt-install --name DEMO-Satellite --ram 12228 --vcpus 4 --network bridge=virbr3 --disk path=/home/rnelson/Images/DEMO-Satellite.qcow2 --import --noautoconsole
-  tags: satellite
+  tags: deploy
 
 - name: Wait for SSH to come up on Satellite
   local_action:
@@ -14,7 +14,7 @@
       port=22
       delay=1
       timeout=300
-  tags: satellite
+  tags: deploy
 
 # 1. Create sat-isolated network with x.x.126.0/24
 # 2. Create VM: 4 vCPU, 12228 GB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:

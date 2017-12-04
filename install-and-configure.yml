@@ -1,7 +1,22 @@
 ---
-- hosts: all
-  name: Install and Configure Environment
+- name: Check for existing Satellite deployment before continuing
   roles:
-    - install-satellite
-    - install-tower
-    - install-idm
+    - check-for-existing-satellite
+
+- name: Configure OS
+  roles:
+    - hostname-and-firewall
+    - etc-hosts
+    - register
+    - install-configure-ipa-client
+
+- name: Install Satellite RPMs and Configure
+  roles:
+    - something
+    - manifest
+    - something
+    - EPEL-Satellite
+    -
+
+
+#check for existing satellite. If it exists, skip only the install portion. Still perform/check the rest.

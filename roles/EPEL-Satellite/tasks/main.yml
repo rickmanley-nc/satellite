@@ -1,0 +1,89 @@
+---
+- name: Download EPEL GPG Key for version 7 from upstream
+  get_url:
+    url: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    dest: /root/RPM-GPG-KEY-EPEL-7
+  tags: satellite
+
+- name: Create EPEL GPG Key
+  command: hammer gpg create --key /root/RPM-GPG-KEY-EPEL-7  --name 'GPG-EPEL-7' --organization "{{satellite_organization}}"
+  tags: satellite
+
+- name: Create EPEL Product
+  command: hammer product create --name='Extra Packages for Enterprise Linux' --organization "{{satellite_organization}}" --description 'Extra Packages for Enterprise Linux'
+  tags: satellite
+
+- name: Create EPEL Repository
+  command: hammer repository create --name='EPEL 7 - x86_64' --organization "{{satellite_organization}}" --product='Extra Packages for Enterprise Linux' --content-type='yum' --publish-via-http=true --url=http://dl.fedoraproject.org/pub/epel/7/x86_64/ --checksum-type=sha256 --gpg-key=GPG-EPEL-7
+  tags: satellite
+
+- name: Add EPEL Product to Sync Plan
+  command: hammer product set-sync-plan --name "Extra Packages for Enterprise Linux" --organization "{{satellite_organization}}" --sync-plan 'Daily Sync'
+  tags: satellite
+
+- name: Ensure EPEL download policy set to 'Lazy'
+  command: hammer repository update --organization "{{satellite_organization}}" --product 'Extra Packages for Enterprise Linux' --name 'EPEL 7 - x86_64' --download-policy on_demand
+  tags: satellite
+
+- name: Sync EPEL repositories
+  command: hammer repository synchronize --organization "{{satellite_organization}}" --product 'Extra Packages for Enterprise Linux' --name 'EPEL 7 - x86_64'
+  tags: satellite
+
+- name: Create EPEL Content View
+  command: hammer content-view create --organization "{{satellite_organization}}" --name 'EPEL' --label epel --description 'Contains only Extra Packages for Enterprise Linux repository'
+  tags: satellite
+
+- name: Add EPEL Repository to EPEL Content View
+  command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'EPEL' --product 'Extra Packages for Enterprise Linux' --repository 'EPEL 7 - x86_64'
+  tags: satellite
+
+#- name: Create Content View Filter (include all packages without errata)
+#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "All packages without errata" --inclusion true --type rpm
+#  tags: satellite
+
+#- name: Call API to check the "Include all packages without errata" box on the previously created Content View Filter
+#GO INTO WEBUI and check the box for "Include all packages without errata" box on this filter. Hammer can't do this, but there is an API call to change "original_packages" to true... I just don't know how to do API scripts yet.
+#https://satellite.demo.com/katello/api/v2/content_view_filters/4
+#https://satellite.demo.com/katello/api/v2/content_views/3/filters/4
+#curl -X GET -s -k -u admin:redhat https://satellite.rnelson-demo.com/katello/api/v2/content_view_filters/1
+# the following doesn't work:
+# curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" -X POST -u admin:redhat -k -d "{\"original_packages\" : false}" https://satellite.rnelson-demo.com/katello/api/v2/content_views/3/filters/1
+
+#- name: Create Content View Filter (All errata until Aug 1, 2017)
+#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "All errata until Aug 1, 2017" --inclusion true --type erratum
+#  tags: satellite
+
+#- name: Create Rule for Filter (All errata until Aug 1, 2017)
+#  command: hammer content-view filter rule create --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "All errata until Aug 1, 2017" --types enhancement,bugfix,security --end-date 2017-08-01
+#  tags: satellite
+
+#- name: Create Content View Filter (Exclude Puppet packages)
+#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "Exclude Puppet packages" --inclusion false --type rpm
+#  tags: satellite
+
+#- name: Create Rule for Filter (Exclude Puppet packages)
+#  command: hammer content-view filter rule create --name "puppet*" --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "Exclude Puppet packages"
+#  tags: satellite
+
+#- name: Create Content View Filter (Exclude qpid packages)
+#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "Exclude qpid packages" --inclusion false --type rpm
+#  tags: satellite
+
+#- name: Create Rule for Filter (Exclude qpid packages)
+#  command: hammer content-view filter rule create --name "*qpid*" --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "Exclude qpid packages"
+#  tags: satellite
+
+#until I figure out the API call, here's the manual process to follow:
+#hammer content-view filter create --organization RedHat --content-view EPEL --name "All packages without errata" --inclusion true --type rpm
+#GO INTO WEBUI and check the box for "Include all packages without errata" box on this filter. Hammer can't do this, but there is an API call to change "original_packages" to true... I just don't know how to do API scripts yet.
+#hammer content-view filter create --organization RedHat --content-view EPEL --name "All errata until Aug 1, 2017" --inclusion true --type erratum
+#hammer content-view filter rule create --organization RedHat --content-view EPEL --content-view-filter "All errata until Aug 1, 2017" --types enhancement,bugfix,security --end-date 2017-08-01
+#hammer content-view filter create --organization RedHat --content-view EPEL --name "Exclude Puppet packages" --inclusion false --type rpm
+#hammer content-view filter rule create --name "puppet*" --organization RedHat --content-view EPEL --content-view-filter "Exclude Puppet packages"
+#hammer content-view filter create --organization RedHat --content-view EPEL --name "Exclude qpid packages" --inclusion false --type rpm
+#hammer content-view filter rule create --name "*qpid*" --organization RedHat --content-view EPEL --content-view-filter "Exclude qpid packages"
+#hammer content-view publish --organization RedHat --name EPEL --description 'Added Filters for Aug 1, 2017'
+
+- name: Publish Initial EPEL Content View
+  command: hammer content-view publish --organization "{{satellite_organization}}" --name EPEL --description 'Initial Publishing'
+  tags: satellite

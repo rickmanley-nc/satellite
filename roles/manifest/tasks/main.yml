@@ -1,0 +1,10 @@
+---
+- name: Download Manifest from Laptop
+  get_url:
+    url: http://{{ laptop_ip }}/{{ satellite_manifest_filename }}
+    dest: /root/manifest.zip
+  tags: manifest
+
+- name: Upload Manifest
+  command: hammer subscription upload --organization "{{satellite_organization}}" --file /root/manifest.zip
+  tags: manifest
