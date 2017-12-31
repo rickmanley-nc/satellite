@@ -1,0 +1,3 @@
+- name: Create Daily Sync Plan to sync at midnight
+  raw: hammer sync-plan create --name 'Daily Sync' --description 'Daily Synchronization Plan' --organization "{{satellite_organization}}" --interval daily --sync-date $(date +"%Y-%m-%d")" 00:00:00" --enabled yes
+  tags: satellite

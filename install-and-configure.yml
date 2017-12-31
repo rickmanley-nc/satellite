@@ -12,11 +12,15 @@
 
 - name: Install Satellite RPMs and Configure
   roles:
-    - something
+    - install-satellite
     - manifest
-    - something
+    - sync-plan
+    - lazy-sync
+    - lifecycle-environments
+    - RHEL7-Satellite
     - EPEL-Satellite
-    -
-
+    - ccv-RHEL7-EPEL
+    - activation-keys
+    - compute-resource    
 
 #check for existing satellite. If it exists, skip only the install portion. Still perform/check the rest.

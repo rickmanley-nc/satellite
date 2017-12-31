@@ -1,0 +1,3 @@
+- name: Enable "Lazy Sync" on-demand policy for all Repositories enabled in the future (this is for quicker deployment of Satellite as a whole)
+  command: hammer settings set --name default_download_policy --value on_demand
+  tags: satellite
