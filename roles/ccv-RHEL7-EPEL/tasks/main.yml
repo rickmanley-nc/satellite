@@ -1,15 +1,16 @@
+---
 - name: Create Development-RHEL Composite Content View (RHEL7_Base + EPEL)
   command: hammer content-view create --composite --organization "{{satellite_organization}}" --name 'Development-RHEL' --label composite_D_rhel7_epel --description 'Combination of RHEL7_Base and EPEL for Development'
-  tags: satellite
+  tags: ccv-rhel7-epel7
 
 - name: Add content views to composite content view for Development-RHEL
   command: hammer content-view update --organization "{{satellite_organization}}" --name "Development-RHEL" --component-ids 2,3
-  tags: satellite
+  tags: ccv-rhel7-epel7
 
 - name: Publish composite content view Development-RHEL
   command: hammer content-view publish --organization "{{satellite_organization}}" --name Development-RHEL --description 'Initial Publishing'
-  tags: satellite
+  tags: ccv-rhel7-epel7
 
 - name: Promote composite content view Development-RHEL
   command: hammer content-view version promote --organization "{{satellite_organization}}" --content-view Development-RHEL --to-lifecycle-environment Development
-  tags: satellite
+  tags: ccv-rhel7-epel7

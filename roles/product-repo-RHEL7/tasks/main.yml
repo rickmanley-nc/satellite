@@ -1,22 +1,23 @@
+---
 - name: Enable RHEL 7 Server
   command: hammer repository-set enable --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Linux 7 Server (RPMs)'
-  tags: satellite
+  tags: rhel7
 
 - name: Enable RHEL 7.4 Kickstart
   command: hammer repository-set enable --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --releasever='7.4' --name 'Red Hat Enterprise Linux 7 Server (Kickstart)'
-  tags: satellite
+  tags: rhel7
 
 - name: Change RHEL 7.4 Kickstart download policy to 'Immediate' (Kickstart must be Immediate, otherwise Provisioning fails)
   command: hammer repository update --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --name 'Red Hat Enterprise Linux 7 Server (Kickstart)' --download-policy immediate
-  tags: satellite
+  tags: rhel7
 
 - name: Enable Satellite Tools 6.2 (for RHEL 7 Server)
   command: hammer repository-set enable --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --name 'Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)'
-  tags: satellite
+  tags: rhel7
 
 - name: Add RHEL Product to Daily Sync Plan
   command: hammer product set-sync-plan --name "Red Hat Enterprise Linux Server" --organization "{{satellite_organization}}" --sync-plan 'Daily Sync'
-  tags: satellite
+  tags: rhel7
 
 - name: Sync Red Hat base repositories
   command: hammer repository synchronize --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --name '{{ item }}'
@@ -24,11 +25,11 @@
     - "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server"
     - "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.4"
     - "Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64"
-  tags: satellite
+  tags: rhel7
 
 - name: Create RHEL 7 Base Content View
   command: hammer content-view create --organization "{{satellite_organization}}" --name 'RHEL7_Base' --label rhel7_base --description 'Core Build for RHEL 7'
-  tags: satellite
+  tags: rhel7
 
 - name: Add RHEL Repositories to RHEL 7 Base Content View
   command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'RHEL7_Base' --product 'Red Hat Enterprise Linux Server' --repository '{{ item }}'
@@ -36,8 +37,8 @@
     - "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server"
     - "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.4"
     - "Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64"
-  tags: satellite
+  tags: rhel7
 
 - name: Publish Initial RHEL 7 Base Content View
   command: hammer content-view publish --organization "{{satellite_organization}}" --name RHEL7_Base --description 'Initial Publishing'
-  tags: satellite
+  tags: rhel7

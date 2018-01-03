@@ -1,12 +1,8 @@
 ---
-- name: Set hostname
-  command: hostnamectl set-hostname {{ satellite_hostname }}
-  tags: hostname-and-firewall
-
 - name: Start and Enable firewalld
   systemd: name=firewalld state=started enabled=yes
   when: not satellite_is_installed
-  tags: hostname-and-firewall
+  tags: firewall
 
 - name: Configure firewalld
   firewalld:
@@ -16,4 +12,4 @@
     state: enabled
   with_items: "{{ satellite_ports }}"
   when: not satellite_is_installed
-  tags: hostname-and-firewall
+  tags: firewall

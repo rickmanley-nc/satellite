@@ -1,11 +1,12 @@
+---
 - name: Create Development Environment
   command: hammer lifecycle-environment create --organization "{{satellite_organization}}" --description 'Development' --name 'Development' --label development --prior Library
-  tags: satellite
+  tags: lifecycle
 
 - name: Create Acceptance Environment
   command: hammer lifecycle-environment create --organization "{{satellite_organization}}" --description 'Acceptance' --name 'Acceptance' --label acceptance --prior 'Development'
-  tags: satellite
+  tags: lifecycle
 
 - name: Create Production Environment
   command: hammer lifecycle-environment create --organization "{{satellite_organization}}" --description 'Production' --name 'Production' --label production --prior 'Acceptance'
-  tags: satellite
+  tags: lifecycle

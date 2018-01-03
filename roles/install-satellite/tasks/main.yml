@@ -8,14 +8,14 @@
     - satellite-clone
     - puppet-foreman_scap_client
   when: not satellite_is_installed
-  tags: satellite
+  tags: install
 
 - name: Foreman Template
   template:
     src: "../templates/foreman.yml.j2"
     dest: /etc/hammer/cli.modules.d/foreman.yml
     mode: 0755
-  tags: satellite
+  tags: install
 
 #- name: Scenario 1: Run satellite-installer (without DHCP, DNS, TFTP)
 #  shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}"
@@ -30,9 +30,9 @@
 - name: Scenario 3: Run satellite-installer (with DHCP, TFTP, DNS)
   shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-proxy-dns true --foreman-proxy-dns-interface ens3 --foreman-proxy-dns-zone "{{satellite_domain}}" --foreman-proxy-dns-forwarders 192.168.126.1 --foreman-proxy-dns-reverse 126.168.192.in-addr.arpa --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface ens3 --foreman-proxy-dhcp-range "192.168.126.150 192.168.126.200" --foreman-proxy-dhcp-gateway 192.168.126.1 --foreman-proxy-dhcp-nameservers 192.168.126.2 --foreman-proxy-tftp true --foreman-proxy-tftp-servername $(hostname) --capsule-puppet true --foreman-proxy-puppetca true --enable-foreman-plugin-openscap
   when: not satellite_is_installed
-  tags: satellite
+  tags: install
 
-- name: Update resolv.conf to have Satellite point to itself for DNS resolution (needs updating based on Scenarios 1, 2, and 3)
+- name: Scenario 3: Update resolv.conf to have Satellite point to itself for DNS resolution
   lineinfile:
     path: /etc/resolv.conf
     regexp: 'nameserver'
@@ -40,12 +40,12 @@
     state: present
     backrefs: yes
   when: not satellite_is_installed
-  tags: satellite
+  tags: install
 
 - name: Update Domain Settings
   command: hammer domain update --name "{{satellite_domain}}" --organizations "{{satellite_organization}}" --locations "{{satellite_location}}"
-  tags: satellite
+  tags: install
 
 - name: Load OpenSCAP content
   command: foreman-rake foreman_openscap:bulk_upload:default
-  tags: satellite
+  tags: install

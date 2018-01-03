@@ -3,39 +3,39 @@
   get_url:
     url: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     dest: /root/RPM-GPG-KEY-EPEL-7
-  tags: satellite
+  tags: epel7
 
 - name: Create EPEL GPG Key
   command: hammer gpg create --key /root/RPM-GPG-KEY-EPEL-7  --name 'GPG-EPEL-7' --organization "{{satellite_organization}}"
-  tags: satellite
+  tags: epel7
 
 - name: Create EPEL Product
   command: hammer product create --name='Extra Packages for Enterprise Linux' --organization "{{satellite_organization}}" --description 'Extra Packages for Enterprise Linux'
-  tags: satellite
+  tags: epel7
 
 - name: Create EPEL Repository
   command: hammer repository create --name='EPEL 7 - x86_64' --organization "{{satellite_organization}}" --product='Extra Packages for Enterprise Linux' --content-type='yum' --publish-via-http=true --url=http://dl.fedoraproject.org/pub/epel/7/x86_64/ --checksum-type=sha256 --gpg-key=GPG-EPEL-7
-  tags: satellite
+  tags: epel7
 
 - name: Add EPEL Product to Sync Plan
   command: hammer product set-sync-plan --name "Extra Packages for Enterprise Linux" --organization "{{satellite_organization}}" --sync-plan 'Daily Sync'
-  tags: satellite
+  tags: epel7
 
 - name: Ensure EPEL download policy set to 'Lazy'
   command: hammer repository update --organization "{{satellite_organization}}" --product 'Extra Packages for Enterprise Linux' --name 'EPEL 7 - x86_64' --download-policy on_demand
-  tags: satellite
+  tags: epel7
 
 - name: Sync EPEL repositories
   command: hammer repository synchronize --organization "{{satellite_organization}}" --product 'Extra Packages for Enterprise Linux' --name 'EPEL 7 - x86_64'
-  tags: satellite
+  tags: epel7
 
 - name: Create EPEL Content View
   command: hammer content-view create --organization "{{satellite_organization}}" --name 'EPEL' --label epel --description 'Contains only Extra Packages for Enterprise Linux repository'
-  tags: satellite
+  tags: epel7
 
 - name: Add EPEL Repository to EPEL Content View
   command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'EPEL' --product 'Extra Packages for Enterprise Linux' --repository 'EPEL 7 - x86_64'
-  tags: satellite
+  tags: epel7
 
 #- name: Create Content View Filter (include all packages without errata)
 #  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "All packages without errata" --inclusion true --type rpm
@@ -86,4 +86,4 @@
 
 - name: Publish Initial EPEL Content View
   command: hammer content-view publish --organization "{{satellite_organization}}" --name EPEL --description 'Initial Publishing'
-  tags: satellite
+  tags: epel7

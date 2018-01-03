@@ -1,8 +1,0 @@
----
-- name: Install 'ipa-client' RPM
-  yum:
-    name: ipa-client
-    state: latest
-
-- name: Configure IPA client
-  command: ipa-client-install --server='{{ idm_hostname }}' --domain='{{ idm_domain }}' --principal='{{ idm_register_username }}' --password='{{ idm_register_password }}' --enable-dns-updates --unattended

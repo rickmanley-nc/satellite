@@ -1,6 +1,0 @@
----
-#IdM Configure Section
-idm_hostname: idm.rnelson-demo.com
-idm_domain: rnelson-demo.com
-idm_register_username: admin
-idm_register_password: redhatrocks
