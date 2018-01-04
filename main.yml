@@ -3,7 +3,7 @@
   roles:
     - check-for-existing-satellite
 
-- name: Configure OS (change role names "configure-hostname" "configure-firewall" etc)
+- name: Configure OS
   roles:
     - hostname
     - firewall
@@ -20,7 +20,10 @@
     - product-repo-RHEL7
     - product-repo-EPEL7
     - ccv-RHEL7-EPEL
+    - product-repo-EAP7
+    - ccv-RHEL7-EAP
     - activation-keys
     - provision-libvirt
+    - ansible-tower-sync-prep
 
 #check for existing satellite. If it exists, skip only the install portion. Still perform/check the rest?

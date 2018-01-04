@@ -1,0 +1,24 @@
+---
+- name: Enable JBoss EAP 7
+  command: hammer repository-set enable --organization "{{satellite_organization}}" --product 'JBoss Enterprise Application Platform' --basearch='x86_64' --releasever='7Server' --name 'JBoss Enterprise Application Platform 7 (RHEL 7 Server) (RPMs)'
+  tags: eap7
+
+- name: Add EAP Product to Daily Sync Plan
+  command: hammer product set-sync-plan --name "JBoss Enterprise Application Platform" --organization "{{satellite_organization}}" --sync-plan 'Daily Sync'
+  tags: eap7
+
+- name: Sync EAP Repository
+  command: hammer repository synchronize --organization "{{satellite_organization}}" --product 'JBoss Enterprise Application Platform' --name 'JBoss Enterprise Application Platform 7 RHEL 7 Server RPMs x86_64 7Server'
+  tags: eap7
+
+- name: Create EAP 7 Content View
+  command: hammer content-view create --organization "{{satellite_organization}}" --name 'EAP7' --label eap7 --description 'EAP 7'
+  tags: eap7
+
+- name: Add EAP Repository to EAP 7 Content View
+  command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'EAP7' --product 'JBoss Enterprise Application Platform' --repository 'JBoss Enterprise Application Platform 7 RHEL 7 Server RPMs x86_64 7Server'
+  tags: eap7
+
+- name: Publish Initial EAP 7 Content View
+  command: hammer content-view publish --organization "{{satellite_organization}}" --name EAP7 --description 'Initial Publishing'
+  tags: eap7

@@ -14,9 +14,12 @@ satellite_hostname: satellite.rnelson-demo.com
 satellite_manifest_filename: manifest-rnelson-sales.zip
 
 #not sure how to make this easy yet. Hammer doesn't do searching by subscription name. It only attaches by 'subscription-id'
-satellite_subscription_ids:
+development_subscription_ids:
   - 3
   - 11
+
+lab_subscription_ids:
+  - 3
 
 satellite_repos:
   - rhel-7-server-rpms

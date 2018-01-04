@@ -10,3 +10,7 @@
 - name: Create Production Environment
   command: hammer lifecycle-environment create --organization "{{satellite_organization}}" --description 'Production' --name 'Production' --label production --prior 'Acceptance'
   tags: lifecycle
+
+- name: Create Lab Environment
+  command: hammer lifecycle-environment create --organization "{{satellite_organization}}" --description 'Lab' --name 'Lab' --label lab --prior Library
+  tags: lifecycle
