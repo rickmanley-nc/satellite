@@ -27,6 +27,7 @@ satellite_repos:
   - rhel-7-server-satellite-6.2-rpms
   - rhel-7-server-extras-rpms
   - rhel-7-server-satellite-maintenance-6-rpms
+  - rhel-7-server-optional-rpms
 
 satellite_ports:
   - '80/tcp'   # HTTP
