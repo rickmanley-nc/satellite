@@ -1,29 +1,32 @@
 ---
-- name: Check for existing Satellite deployment before continuing
-  roles:
-    - check-for-existing-satellite
+- hosts: all
 
-- name: Configure OS
-  roles:
-    - hostname
-    - firewall
-    - etc-hosts
-    - register
+  tasks:
+    - name: Check for existing Satellite deployment before continuing
+      roles:
+        - check-for-existing-satellite
 
-- name: Install and Configure Satellite
-  roles:
-    - install-satellite
-    - manifest
-    - sync-plan
-    - lazy-sync
-    - lifecycle-environments
-    - product-repo-RHEL7
-    - product-repo-EPEL7
-    - ccv-RHEL7-EPEL
-    - product-repo-EAP7
-    - ccv-RHEL7-EAP
-    - activation-keys
-    - provision-libvirt
-    - ansible-tower-sync-prep
+    - name: Configure OS
+      roles:
+        - hostname
+        - firewall
+        - etc-hosts
+        - register
+
+    - name: Install and Configure Satellite
+      roles:
+        - install-satellite
+        - manifest
+        - sync-plan
+        - lazy-sync
+        - lifecycle-environments
+        - product-repo-RHEL7
+        - product-repo-EPEL7
+        - ccv-RHEL7-EPEL
+        - product-repo-EAP7
+        - ccv-RHEL7-EAP
+        - activation-keys
+        - provision-libvirt
+        - ansible-tower-sync-prep
 
 #check for existing satellite. If it exists, skip only the install portion. Still perform/check the rest?
