@@ -6,5 +6,5 @@
     mode: 0644
     backup: yes
     force: yes
-  when: not satellite_is_installed
+#  when: not satellite_is_installed
   tags: etc-hosts

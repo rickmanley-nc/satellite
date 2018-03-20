@@ -24,7 +24,7 @@ lab_subscription_ids:
 satellite_repos:
   - rhel-7-server-rpms
   - rhel-server-rhscl-7-rpms
-  - rhel-7-server-satellite-6.2-rpms
+  - rhel-7-server-satellite-6.3-rpms
   - rhel-7-server-extras-rpms
   - rhel-7-server-satellite-maintenance-6-rpms
   - rhel-7-server-optional-rpms

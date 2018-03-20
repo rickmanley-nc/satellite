@@ -28,5 +28,3 @@
         - activation-keys
         - provision-libvirt
         - ansible-tower-sync-prep
-
-#check for existing satellite. If it exists, skip only the install portion. Still perform/check the rest?
