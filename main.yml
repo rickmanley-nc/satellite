@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Install Satellite
+  hosts: all
 
   tasks:
     - name: Check for existing Satellite deployment before continuing
