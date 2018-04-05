@@ -6,7 +6,7 @@
       password: "{{ satellite_admin_password }}"
       force_basic_auth: yes
   register: satellite_is_installed
-#  ignore_errors: yes
+  ignore_errors: yes
   tags: satellite-exists
 
 #- name: Set the 'satellite_is_installed' variable
