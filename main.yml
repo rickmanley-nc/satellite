@@ -1,9 +1,11 @@
 ---
 - name: Check for existing Satellite deployment before continuing
+  hosts: all
   roles:
     - check-for-existing-satellite
 
 - name: Configure OS
+  hosts: all
   roles:
     - hostname
     - firewall
@@ -11,6 +13,7 @@
     - register
 
 - name: Install and Configure Satellite
+  hosts: all
   roles:
     - install-satellite
     - manifest
