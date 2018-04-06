@@ -11,13 +11,6 @@
 #  when: not satellite_is_installed
   tags: install
 
-- name: Foreman Template
-  template:
-    src: "../templates/foreman.yml.j2"
-    dest: /etc/hammer/cli.modules.d/foreman.yml
-    mode: 0755
-  tags: install
-
 #- name: Scenario 1 Run satellite-installer (without DHCP, DNS, TFTP)
 #  shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-ipa-authentication=true
 #  when: not satellite_is_installed
@@ -41,6 +34,13 @@
     state: present
     backrefs: yes
 #  when: not satellite_is_installed
+  tags: install
+
+- name: Foreman Template
+  template:
+    src: "../templates/foreman.yml.j2"
+    dest: /etc/hammer/cli.modules.d/foreman.yml
+    mode: 0755
   tags: install
 
 - name: Update Domain Settings
