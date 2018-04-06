@@ -9,7 +9,7 @@
   ignore_errors: yes
   tags: satellite-exists
 
-#- name: Set the 'satellite_is_installed' variable
-#  set_fact:
-#    satellite_is_installed: "{{ False if satellite_is_installed.failed | default(False) or satellite_is_installed.status != 200 else True }}"
-#  tags: satellite-exists
+- name: Set the 'satellite_is_installed' variable
+  set_fact:
+    satellite_is_installed: "{{ False if satellite_is_installed.failed | default(False) or satellite_is_installed.status != 200 else True }}"
+  tags: satellite-exists
