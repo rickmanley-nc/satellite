@@ -1,6 +1,6 @@
 ---
-- name: Create Development-RHEL Composite Content View (RHEL7_Base + EPEL)
-  command: hammer content-view create --composite --organization "{{satellite_organization}}" --name 'Development-RHEL' --label composite_D_rhel7_epel --description 'Combination of RHEL7_Base and EPEL for Development'
+- name: Create Development-RHEL Composite Content View (RHEL7_Base + EPEL7)
+  command: hammer content-view create --composite --organization "{{satellite_organization}}" --name 'Development-RHEL' --label composite_D_rhel7_epel7 --description 'Combination of RHEL7_Base and EPEL7 for Development'
   tags: ccv-rhel7-epel7
 
 - name: Add content views to composite content view for Development-RHEL

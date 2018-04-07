@@ -22,9 +22,9 @@
     - lifecycle-environments
     - product-repo-RHEL7
     - product-repo-EPEL7
-    - ccv-RHEL7-EPEL
+    - ccv-RHEL7-EPEL7
     - product-repo-EAP7
-    - ccv-RHEL7-EAP
+    - ccv-RHEL7-EAP7
     - activation-keys
     - provision-libvirt
     - ansible-tower-sync-prep
