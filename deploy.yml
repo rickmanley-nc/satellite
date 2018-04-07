@@ -3,7 +3,7 @@
 
   tasks:
     - name: Copy Gold Image to /home/rnelson/Images/
-      command: cp -r /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
+      command: cp -r /home/rnelson/Images/original/GOLD2-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
       tags: deploy
 
     - name: Provision Gold Image as DEMO-Satellite
@@ -20,7 +20,7 @@
       tags: deploy
 
 # 1. Create sat-isolated network with x.x.126.0/24
-# 2. Create VM: 4 vCPU, 12228 GB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
+# 2. Create VM: 4 vCPU, 12228 MB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
 # Configure static networking as
 # IP -  192.168.126.2
 # Netmask - 255.255.255.0
