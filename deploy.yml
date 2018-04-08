@@ -3,7 +3,7 @@
 
   tasks:
     - name: Copy Gold Image to /home/rnelson/Images/
-      command: cp -r /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
+      command: cp -r /home/rnelson/Images/original/GOLD3-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
       tags: deploy
 
     - name: Provision Gold Image as DEMO-Satellite
