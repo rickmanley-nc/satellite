@@ -1,19 +1,19 @@
 ---
-- name: Create Lab-RHEL Composite Content View (RHEL7_Base + EAP7)
-  command: hammer content-view create --composite --organization "{{satellite_organization}}" --name 'Lab-RHEL-EAP' --label composite_L_rhel7_eap7 --description 'Combination of RHEL7_Base and EAP for Lab'
+- name: Create Lab-RHEL7-EAP7 Composite Content View (RHEL7_Base + EAP7)
+  command: hammer content-view create --composite --organization "{{satellite_organization}}" --name 'Lab-RHEL7-EAP7' --label composite_L_rhel7_eap7 --description 'Combination of RHEL7_Base and EAP7 for Lab'
   tags: ccv-rhel7-eap7
 
-- name: Add content views to composite content view for Development-RHEL
-  command: hammer content-view update --organization "{{satellite_organization}}" --name "Lab-RHEL-EAP" --component-ids 2,5
+- name: Add content views to composite content view for Lab-RHEL7-EAP7
+  command: hammer content-view update --organization "{{satellite_organization}}" --name "Lab-RHEL7-EAP7" --component-ids 2,5
   tags: ccv-rhel7-eap7
 
 ## hammer --output json content-view version list
 ## need to update initial creation of component IDs after testing.
 
-- name: Publish composite content view Lab-RHEL
-  command: hammer content-view publish --organization "{{satellite_organization}}" --name Lab-RHEL-EAP --description 'Initial Publishing'
+- name: Publish composite content view Lab-RHEL7-EAP7
+  command: hammer content-view publish --organization "{{satellite_organization}}" --name Lab-RHEL7-EAP7 --description 'Initial Publishing'
   tags: ccv-rhel7-eap7
 
-- name: Promote composite content view Lab-RHEL
-  command: hammer content-view version promote --organization "{{satellite_organization}}" --content-view Lab-RHEL-EAP --to-lifecycle-environment Lab
+- name: Promote composite content view Lab-RHEL7-EAP7
+  command: hammer content-view version promote --organization "{{satellite_organization}}" --content-view Lab-RHEL7-EAP7 --to-lifecycle-environment Lab
   tags: ccv-rhel7-eap7

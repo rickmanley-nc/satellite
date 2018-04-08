@@ -27,4 +27,4 @@
     - ccv-RHEL7-EAP7
     - activation-keys
     - provision-libvirt
-    - ansible-tower-sync-prep
+#    - ansible-tower-sync-prep

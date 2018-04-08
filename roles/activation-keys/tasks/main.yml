@@ -1,22 +1,26 @@
 ---
 - name: Create RHEL Activation Key for Development guests
-  command: hammer activation-key create --organization "{{satellite_organization}}" --description 'Activation Key for guests in Development Environment for RHEL 7 servers' --content-view 'Development-RHEL' --unlimited-hosts --name ak-Reg_To_Development-guest --lifecycle-environment 'Development'
+  command: hammer activation-key create --organization "{{satellite_organization}}" --description 'Activation Key for guests in Development Environment for RHEL 7 servers' --content-view 'Development-RHEL7' --unlimited-hosts --name ak-Reg_To_Development-rhel7 --lifecycle-environment 'Development'
   tags: activation-key
 
 - name: Attach subscriptions to Activation Key for Development
-  command: hammer activation-key add-subscription --name ak-Reg_To_Development-guest --subscription-id {{ item }} --organization "{{satellite_organization}}"
+  command: hammer activation-key add-subscription --name ak-Reg_To_Development-rhel7 --subscription-id {{ item }} --organization "{{satellite_organization}}"
   with_items: "{{ development_subscription_ids }}"
   tags: activation-key
 
 - name: Enable Sat Tools channel in Development Activation Key
-  command: hammer activation-key content-override --name ak-Reg_To_Development-guest --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.2-rpms --value 1
+  command: hammer activation-key content-override --name ak-Reg_To_Development-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.3-rpms --value 1
   tags: activation-key
 
 - name: Create RHEL Activation Key for Lab guests
-  command: hammer activation-key create --organization "{{satellite_organization}}" --description 'Activation Key for guests in Lab Environment for RHEL 7 servers' --content-view 'Lab-RHEL-EAP' --unlimited-hosts --name ak-Reg_To_Lab-guest --lifecycle-environment 'Lab'
+  command: hammer activation-key create --organization "{{satellite_organization}}" --description 'Activation Key for guests in Lab Environment for RHEL 7 servers' --content-view 'Lab-RHEL7-EAP7' --unlimited-hosts --name ak-Reg_To_Lab-rhel7 --lifecycle-environment 'Lab'
   tags: activation-key
 
 - name: Attach subscriptions to Activation Key for Development
-  command: hammer activation-key add-subscription --name ak-Reg_To_Lab-guest --subscription-id {{ item }} --organization "{{satellite_organization}}"
+  command: hammer activation-key add-subscription --name ak-Reg_To_Lab-rhel7 --subscription-id {{ item }} --organization "{{satellite_organization}}"
   with_items: "{{ lab_subscription_ids }}"
+  tags: activation-key
+
+- name: Enable Sat Tools channel in Development Activation Key
+  command: hammer activation-key content-override --name ak-Reg_To_Lab-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.3-rpms --value 1
   tags: activation-key
