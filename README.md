@@ -50,12 +50,12 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 - Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, https://projects.theforeman.org/issues/6344
 - Need to inherit puppet environment to location before host group creation.
 - Need to manually create hostgroups, medium not found during hammer execution
-- Need to verify if updating OpenSCAP default values is needed, https://access.redhat.com/solutions/3217081
+- Need to manually create OpenSCAP policy after hostgroup is created. Create both Standard with tailoring file and STIG build
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
 - Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
 - Make tag notes
 - Make role notes
-- Update create network notes
+- Update create network notes with libvirt network playbook from operations
 - Update Gold Image Build with proper partition layout
 
 ## License

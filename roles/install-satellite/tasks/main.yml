@@ -44,9 +44,18 @@
   tags: install
 
 - name: Update Domain Settings
-  command: hammer domain update --name "{{satellite_domain}}" --organizations "{{satellite_organization}}" --locations "{{satellite_location}}"
+  command: hammer domain update --name "{{satellite_domain}}" --organizations "{{satellite_organization}}" --locations "{{satellite_location}}" --dns "{{satellite_hostname}}"
   tags: install
 
 - name: Load OpenSCAP content
   command: foreman-rake foreman_openscap:bulk_upload:default
-  tags: install
+  tags: openscap
+
+- name: Download Standard Policy Tailoring file from Laptop
+  get_url:
+    url: http://{{ laptop_ip }}/ssg-rhel7-ds-tailoring-standard-rnelson.xml
+    dest: /root/ssg-rhel7-ds-tailoring-standard-rnelson.xml
+    mode: 0644
+    backup: yes
+    force: yes
+  tags: openscap
