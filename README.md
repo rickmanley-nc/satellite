@@ -45,7 +45,7 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Status of Remaining Items to Complete
 
-- In product-repo-EPEL7 role, need to automate filter creation. All steps are documented in the playbook, but I need an api call to check a box in the web ui.
+- Verify that EPEL7 filters work correctly, as well as make the filter date a variable so you can schedule this monthly in Ansible Tower
 - After subnet is created from hammer, need to manually add remote execution capsule under the web UI for subnet. Not listed in hammer, is there a way to use API call to add this?
 - Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, https://projects.theforeman.org/issues/6344
 - Need to inherit puppet environment to location before host group creation.

@@ -29,53 +29,47 @@
   command: hammer repository synchronize --organization "{{satellite_organization}}" --product 'Extra Packages for Enterprise Linux' --name 'EPEL 7 - x86_64'
   tags: epel7
 
-- name: Create EPEL Content View
-  command: hammer content-view create --organization "{{satellite_organization}}" --name 'EPEL' --label epel --description 'Contains only Extra Packages for Enterprise Linux repository'
+- name: Create EPEL7 Content View
+  command: hammer content-view create --organization "{{satellite_organization}}" --name 'EPEL7' --label epel7 --description 'Contains only Extra Packages for Enterprise Linux 7 repository'
   tags: epel7
 
-- name: Add EPEL Repository to EPEL Content View
-  command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'EPEL' --product 'Extra Packages for Enterprise Linux' --repository 'EPEL 7 - x86_64'
+- name: Add EPEL7 Repository to EPEL7 Content View
+  command: hammer content-view add-repository --organization "{{satellite_organization}}" --name 'EPEL7' --product 'Extra Packages for Enterprise Linux' --repository 'EPEL 7 - x86_64'
   tags: epel7
 
-#- name: Create Content View Filter (include all packages without errata)
-#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "All packages without errata" --inclusion true --type rpm
-#  tags: satellite
+- name: Publish Initial EPEL Content View
+  command: hammer content-view publish --organization "{{satellite_organization}}" --name EPEL7 --description 'Initial Publishing'
+  tags: epel7
 
-#- name: Call API to check the "Include all packages without errata" box on the previously created Content View Filter
-#GO INTO WEBUI and check the box for "Include all packages without errata" box on this filter. Hammer can't do this, but there is an API call to change "original_packages" to true... I just don't know how to do API scripts yet.
-#https://satellite.demo.com/katello/api/v2/content_view_filters/4
-#https://satellite.demo.com/katello/api/v2/content_views/3/filters/4
-#curl -X GET -s -k -u admin:redhat https://satellite.rnelson-demo.com/katello/api/v2/content_view_filters/1
-# the following doesn't work:
-# curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" -X POST -u admin:redhat -k -d "{\"original_packages\" : false}" https://satellite.rnelson-demo.com/katello/api/v2/content_views/3/filters/1
+- name: Create Content View Filter (include all packages without errata)
+  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL7 --name "All packages without errata" --inclusion true --type rpm --original-packages true
+  tags: epel7
 
-#- name: Create Content View Filter (All errata until Aug 1, 2017)
-#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "All errata until Aug 1, 2017" --inclusion true --type erratum
-#  tags: satellite
+- name: Create Content View Filter (All errata until Aug 1, 2017)
+  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL7 --name "All errata until Aug 1, 2017" --inclusion true --type erratum
+  tags: epel7
 
-#- name: Create Rule for Filter (All errata until Aug 1, 2017)
-#  command: hammer content-view filter rule create --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "All errata until Aug 1, 2017" --types enhancement,bugfix,security --end-date 2017-08-01
-#  tags: satellite
+- name: Create Rule for Filter (All errata until Aug 1, 2017)
+  command: hammer content-view filter rule create --organization "{{satellite_organization}}" --content-view EPEL7 --content-view-filter "All errata until Aug 1, 2017" --types enhancement,bugfix,security --end-date 2017-08-01
+  tags: epel7
 
-#- name: Create Content View Filter (Exclude Puppet packages)
-#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "Exclude Puppet packages" --inclusion false --type rpm
-#  tags: satellite
+- name: Create Content View Filter (Exclude Puppet packages)
+  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL7 --name "Exclude Puppet packages" --inclusion false --type rpm
+  tags: epel7
 
-#- name: Create Rule for Filter (Exclude Puppet packages)
-#  command: hammer content-view filter rule create --name "puppet*" --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "Exclude Puppet packages"
-#  tags: satellite
+- name: Create Rule for Filter (Exclude Puppet packages)
+  command: hammer content-view filter rule create --name "puppet*" --organization "{{satellite_organization}}" --content-view EPEL7 --content-view-filter "Exclude Puppet packages"
+  tags: epel7
 
-#- name: Create Content View Filter (Exclude qpid packages)
-#  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL --name "Exclude qpid packages" --inclusion false --type rpm
-#  tags: satellite
+- name: Create Content View Filter (Exclude qpid packages)
+  command: hammer content-view filter create --organization "{{satellite_organization}}" --content-view EPEL7 --name "Exclude qpid packages" --inclusion false --type rpm
+  tags: epel7
 
-#- name: Create Rule for Filter (Exclude qpid packages)
-#  command: hammer content-view filter rule create --name "*qpid*" --organization "{{satellite_organization}}" --content-view EPEL --content-view-filter "Exclude qpid packages"
-#  tags: satellite
+- name: Create Rule for Filter (Exclude qpid packages)
+  command: hammer content-view filter rule create --name "*qpid*" --organization "{{satellite_organization}}" --content-view EPEL7 --content-view-filter "Exclude qpid packages"
+  tags: epel7
 
-#until I figure out the API call, here's the manual process to follow:
-#hammer content-view filter create --organization RedHat --content-view EPEL --name "All packages without errata" --inclusion true --type rpm
-#GO INTO WEBUI and check the box for "Include all packages without errata" box on this filter. Hammer can't do this, but there is an API call to change "original_packages" to true... I just don't know how to do API scripts yet.
+#hammer content-view filter create --organization RedHat --content-view EPEL --name "All packages without errata" --inclusion true --type rpm --original-packages true
 #hammer content-view filter create --organization RedHat --content-view EPEL --name "All errata until Aug 1, 2017" --inclusion true --type erratum
 #hammer content-view filter rule create --organization RedHat --content-view EPEL --content-view-filter "All errata until Aug 1, 2017" --types enhancement,bugfix,security --end-date 2017-08-01
 #hammer content-view filter create --organization RedHat --content-view EPEL --name "Exclude Puppet packages" --inclusion false --type rpm
@@ -84,6 +78,6 @@
 #hammer content-view filter rule create --name "*qpid*" --organization RedHat --content-view EPEL --content-view-filter "Exclude qpid packages"
 #hammer content-view publish --organization RedHat --name EPEL --description 'Added Filters for Aug 1, 2017'
 
-- name: Publish Initial EPEL Content View
-  command: hammer content-view publish --organization "{{satellite_organization}}" --name EPEL --description 'Initial Publishing'
+- name: Publish EPEL7 Content View after filters were added to show filters working
+  command: hammer content-view publish --organization "{{satellite_organization}}" --name EPEL7 --description 'Added Filters for Aug 1, 2017'
   tags: epel7
