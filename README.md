@@ -1,4 +1,14 @@
-# Deploy VM on LibVirt, Configure Satellite
+# Deploy and Configure Satellite 6.3
+This repo is dedicated to building Satellite 6.3 on a VM on LibVirt KVM. After deploying, and running through some of the manual steps listed in "Status of Remaining Items to Complete", the following demo is ready to be done:
+
+ - General Layout and Overview (I had to list this for those first/initial walkthroughs)
+ - Provisioning
+ - Patching
+ - Content Views and Composite Content Views
+ - Content View filters for EPEL
+ - Red Hat Insights
+ - OpenSCAP scanning and reporting against a Standard Policy system and a STIG system
+ - More to come...
 
 ## Requirements and Steps
 
@@ -51,8 +61,8 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 - Need to inherit puppet environment to location before host group creation.
 - Need to manually create hostgroups, medium not found during hammer execution
 - Need to manually create OpenSCAP policy after hostgroup is created. Create both Standard with tailoring file and STIG build
-- Break OpenSCAP out into its own role. Include uploading the tailoring files.
-- Create STIG kickstart template and upload for provisioning (mainly need partition layout)
+- Break OpenSCAP out into its own role. Include uploading the tailoring files. https://github.com/Ansible-Security-Compliance
+- Copy existing partition templates and make a role for STIG builds. After importing template, will need to run the following command to add OS version: # hammer partition-table add-operatingsystem --name "Kickstart default - STIG" --operatingsystem "RedHat 7.4"
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
 - Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
 - Make tag notes
