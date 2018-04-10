@@ -51,6 +51,8 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 - Need to inherit puppet environment to location before host group creation.
 - Need to manually create hostgroups, medium not found during hammer execution
 - Need to manually create OpenSCAP policy after hostgroup is created. Create both Standard with tailoring file and STIG build
+- Break OpenSCAP out into its own role. Include uploading the tailoring files.
+- Create STIG kickstart template and upload for provisioning (mainly need partition layout)
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
 - Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
 - Make tag notes
