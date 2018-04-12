@@ -13,12 +13,12 @@ After kicking off the playbook (on a decent wifi connection, this will take just
  - Content View filters for EPEL7
  - Red Hat Insights
  - OpenSCAP scanning and reporting against a Standard Policy system and a STIG policy
- - More to come... File Repos, IdM integration, ...
+ - More to come... File Repos, IdM integration, Ansible Tower integration, ...
 
 
 ## Requirements and Steps
 
-- Create host-level network on Laptop, 192.168.126.x on LibVirt - Easy with the 'create-libvirt-network' role within my Laptop-Configure repo: https://github.com/rickmanley-nc/laptop-configure
+- Create host-level network on Laptop, 192.168.126.x on LibVirt - Easy with the 'libvirtd' role and the 'create-libvirt-network' role within my Laptop-Configure repo: https://github.com/rickmanley-nc/laptop-configure
 - Build Gold Image (This needs an overhaul, but it currently works and is not urgent)
   - Create VM: 4 vCPU, 12228 MB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
   - Configure static networking as
