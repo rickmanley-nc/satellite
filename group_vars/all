@@ -11,7 +11,12 @@ satellite_organization: RedHat
 satellite_location: RDU
 satellite_domain: rnelson-demo.com
 satellite_hostname: satellite.rnelson-demo.com
+satellite_ip: 192.168.126.2
+satellite_rdns: 126.168.192.in-addr.arpa
+satellite_dhcp_range: "192.168.126.150 192.168.126.200"
+satellite_nic: ens3
 satellite_manifest_filename: manifest-rnelson-sales-6.3.zip
+
 
 #not sure how to make this easy yet. Hammer doesn't do searching by subscription name. It only attaches by 'subscription-id'
 development_subscription_ids:

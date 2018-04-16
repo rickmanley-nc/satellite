@@ -28,6 +28,10 @@ After kicking off the playbook (on a decent wifi connection, this will take just
     - DNS - 192.168.126.1 (note: this is temporary. After we install Satellite, we'll change this to the IP of the Satellite as it will be running DNS)
   - Ensure partition layout has just "/" at 120.8 GiB, "swap" at 4096 MiB, and "/boot" at 200 MiB.
   - Clone vm as gold image.
+- Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "satellite"
+- Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
+  - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
+    - Copy the manifest to /var/www/html
 - Update group_vars/all
 
 ## Gotchas!
