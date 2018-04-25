@@ -32,6 +32,7 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 - Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
   - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
     - Copy the manifest to /var/www/html
+    - Run 'restorecon' against /var/www/html
 - Update group_vars/all
 
 ## Gotchas!
@@ -39,6 +40,7 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
 - Within group_vars/all, both development_subscription_ids and lab_subscription_ids are dependent on your manifest. I have several different subscriptions on my test account, and the ordering of them is not logical. Currently the 'hammer' tool has to connect through a numerical Subscription ID. This is something that could be done by querying 'hammer subscription list' and filtering on specific subscription names to then store the Sub ID. I haven't gotten to this yet, but it's doable.
+  - Another option is to plan to have an account
 
 - There are 3 different scenarios for installing Satellite. I have this hard coded for Scenario 3 (install with DHCP, TFTP, and DNS). The other scenarios have not been tested.
 
