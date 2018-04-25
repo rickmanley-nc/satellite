@@ -4,7 +4,7 @@
   tags: ccv-rhel7-eap7
 
 - name: Add content views to composite content view for Lab-RHEL7-EAP7
-  command: hammer content-view update --organization "{{satellite_organization}}" --name "Lab-RHEL7-EAP7" --component-ids 2,5
+  command: hammer content-view update --organization "{{satellite_organization}}" --name "Lab-RHEL7-EAP7" --component-ids 2,6
   tags: ccv-rhel7-eap7
 
 ## hammer --output json content-view version list
