@@ -18,13 +18,13 @@ satellite_nic: ens3
 satellite_manifest_filename: manifest-rnelson-sales-6.3.zip
 
 
-#not sure how to make this easy yet. Hammer doesn't do searching by subscription name. It only attaches by 'subscription-id'
+#not sure how to make this easy yet. A BZ was filed for making this easier and I think this was resolved in Feb 2018.
 development_subscription_ids:
-  - 6 #RHEL Server
+  - 7 #RHEL Server
   - 10 #EPEL
 
 lab_subscription_ids:
-  - 6 #RHEL Server
+  - 7 #RHEL Server
 
 satellite_repos:
   - rhel-7-server-rpms
