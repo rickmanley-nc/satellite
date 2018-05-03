@@ -1,0 +1,61 @@
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+repo --name="Server-HighAvailability" --baseurl=file:///run/install/repo/addons/HighAvailability
+repo --name="Server-ResilientStorage" --baseurl=file:///run/install/repo/addons/ResilientStorage
+# Use CDROM installation media
+cdrom
+# Use graphical install
+#graphical
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use={{satellite_disk}}
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts='us'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --bootproto=static --device={{satellite_nic}} --gateway={{libvirt_ip_address}} --ip={{satellite_ip}} --nameserver={{libvirt_ip_address}} --netmask={{libvirt_netmask}} --ipv6=auto --activate
+network  --hostname={{satellite_hostname}}
+
+# Root password
+rootpw --iscrypted $6$rTc3momYgYqHuJmS$SnxjDXt.AmPtN9utg6f6wkzUJZsWPe37S2Y.5l2.fROSt6hN3t4I5x4fL/qjinGNRsOd6FMewUYdpAm7NpdEq0
+# System services
+services --enabled="chronyd"
+# System timezone
+timezone America/New_York --isUtc
+# System bootloader configuration
+bootloader --append=" crashkernel=auto" --location=mbr --boot-drive={{satellite_disk}}
+# Partition clearing information
+clearpart --none --initlabel
+# Disk partitioning information
+part /boot --fstype="xfs" --ondisk={{satellite_disk}} --size=500
+part pv.197 --fstype="lvmpv" --ondisk={{satellite_disk}} --size=127499
+volgroup rhel_satellite --pesize=4096 pv.197
+logvol /var/log/audit  --fstype="xfs" --size=4096 --name=var_log_audit --vgname=rhel_satellite
+logvol /var  --fstype="xfs" --size=102920 --name=var --vgname=rhel_satellite
+logvol swap  --fstype="swap" --size=4096 --name=swap --vgname=rhel_satellite
+logvol /  --fstype="xfs" --size=10240 --name=root --vgname=rhel_satellite
+logvol /home  --fstype="xfs" --size=2048 --name=home --vgname=rhel_satellite
+logvol /var/log  --fstype="xfs" --size=4096 --name=var_log --vgname=rhel_satellite
+
+%packages
+@^minimal
+@core
+chrony
+kexec-tools
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+
+reboot --eject

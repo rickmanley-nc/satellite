@@ -2,12 +2,30 @@
 - hosts: all
 
   tasks:
-    - name: Copy Gold Image to /home/rnelson/Images/
-      command: cp -r /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
+    - name: Create Satellite Kickstart file
+      template:
+        src: "../templates/satellite-ks.cfg.j2"
+        dest: /var/www/html/satellite-ks.cfg
+        mode: 0644
+      tags:
+        - kickstart
+
+    - name:     restorecon on /var/www/html (this should really be a notify if we create the kickstart or generate the template)
+      command:  restorecon -Rv /var/www/html
+      tags:
+        - deploy
+
+    - name: Install DEMO-Satellite from Kickstart
+      command: virt-install --name DEMO-Satellite --memory {{satellite_memory}} --vcpus {{satellite_vcpus}} --disk size=30,pool={{libvirt_storage_pool_name}} --location /home/{{laptop_local_user}}/{{libvirt_storage_pool_name}}/original/rhel-server-7.4-x86_64-dvd.iso --extra-args "ks=http://{{libvirt_ip_address}}/satellite-ks.cfg" --os-type linux --noautoconsole
       tags: deploy
 
-    - name: Provision Gold Image as DEMO-Satellite
-      command: virt-install --name DEMO-Satellite --ram 12228 --vcpus 4 --network bridge=virbr3 --disk path=/home/rnelson/Images/DEMO-Satellite.qcow2 --import --noautoconsole
+    - name: WAIT 5 minutes
+      wait_for:
+        timeout: 300
+      tags: deploy
+
+    - name: Start the VM
+      command: virsh start DEMO-Satellite
       tags: deploy
 
     - name: Wait for SSH to come up on Satellite
@@ -18,21 +36,3 @@
           delay=1
           timeout=300
       tags: deploy
-
-# 1. Create sat-isolated network with x.x.126.0/24
-# 2. Create VM: 4 vCPU, 12228 MB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
-# Configure static networking as
-# IP -  192.168.126.2
-# Netmask - 255.255.255.0
-# Gateway - 192.168.126.1
-# DNS - 192.168.126.1 (note: this is temporary. After we install Satellite, we'll change this to the IP of the Satellite as it will be running DNS)
-# 3. Ensure partition layout has just "/" at 120.8 GiB, "swap" at 4096 MiB, and "/boot" at 200 MiB
-# 4. Clone vm as gold image.
-
-# virsh suspend DEMO-Satellite
-# virt-clone --connect qemu:///system --original DEMO-Satellite --name GOLD-Satellite --file /home/rnelson/Images/GOLD-Satellite.qcow2
-# virsh resume DEMO-Satellite
-# virt-sysprep -d GOLD-Satellite --hostname satellite.rnelson-demo.com --root-password password:redhat
-# mv /home/rnelson/Images/GOLD-Satellite.qcow2 /home/rnelson/Images/original/
-# cp /home/rnelson/Images/original/GOLD-Satellite.qcow2 /home/rnelson/Images/DEMO-Satellite.qcow2
-# virt-install --name DEMO-Satellite --ram 12228 --vcpus 4 --network bridge=virbr3 --disk path=/home/rnelson/Images/DEMO-Satellite.qcow2 --import --noautoconsole

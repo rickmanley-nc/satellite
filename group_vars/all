@@ -17,6 +17,16 @@ satellite_dhcp_range: "192.168.126.150 192.168.126.200"
 satellite_nic: ens3
 satellite_manifest_filename: manifest-rnelson-sales-6.3.zip
 
+##Satellite kickstart section#
+satellite_disk: sda
+satellite_vcpus: 4
+satellite_memory: 12228
+##LibVirt Storage and Network Variables##
+libvirt_storage_pool_name: Images
+libvirt_ip_address:        192.168.126.1
+libvirt_netmask:           255.255.255.0
+libvirt_bridge_name:       virbr3
+libvirt_network_name:      rnelson-demo
 
 #not sure how to make this easy yet. A BZ was filed for making this easier and I think this was resolved in Feb 2018.
 development_subscription_ids:
