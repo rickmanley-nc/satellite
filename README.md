@@ -19,15 +19,6 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 ## Requirements and Steps
 
 - Create host-level network on Laptop, 192.168.126.x on LibVirt - Easy with the 'httpd', 'libvirtd', and 'create-libvirt-network' role within my Laptop-Configure repo: https://github.com/rickmanley-nc/laptop-configure
-- Build Gold Image (This needs an overhaul, but it currently works and is not urgent)
-  - Create VM: 4 vCPU, 12228 MB RAM, 125 GB Storage, RHEL 7.3 - place on sat-isolated network with the following static ip info:
-  - Configure static networking as
-    - IP -  192.168.126.2
-    - Netmask - 255.255.255.0
-    - Gateway - 192.168.126.1
-    - DNS - 192.168.126.1 (note: this is temporary. After we install Satellite, we'll change this to the IP of the Satellite as it will be running DNS)
-  - Ensure partition layout has just "/" at 120.8 GiB, "swap" at 4096 MiB, and "/boot" at 200 MiB.
-  - Clone vm as gold image.
 - Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "satellite"
 - Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
   - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
@@ -39,12 +30,13 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
+- Currently testing new deploy.yml. I have this working on my Tower role, and will be syncing the deploy.yml over in the next uploads.
 - Within group_vars/all, both development_subscription_ids and lab_subscription_ids are dependent on your manifest. I have several different subscriptions on my test account, and the ordering of them is not logical. Currently the 'hammer' tool has to connect through a numerical Subscription ID. This is something that could be done by querying 'hammer subscription list' and filtering on specific subscription names to then store the Sub ID. I haven't gotten to this yet, but it's doable.
   - Another option is to plan to have an account
 
 - There are 3 different scenarios for installing Satellite. I have this hard coded for Scenario 3 (install with DHCP, TFTP, and DNS). The other scenarios have not been tested.
 
-- If the playbook fails, it is not idempotent yet. You will likely need to redeploy from the Gold Image and kick of the playbook again. Some of this is due to improper tagging, some because there's not a 'hammer' module, and some due to not having the correct conditionals. The 'check-for-existing-satellite' role is not used as effectively as it could, and that's something I'm currently working on.
+- If the playbook fails, it is not idempotent yet. You will likely need to delete the deployed VM and kick of the playbook again. Some of this is due to improper tagging, some because there's not a 'hammer' module, and some due to not having the correct conditionals. The 'check-for-existing-satellite' role is not used as effectively as it could, and that's something I'm currently working on.
 
 
 ## Roles
@@ -77,6 +69,7 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Remaining Items to Complete
 
+- Update deploy.yml to kickstart vs the original manual gold image build.
 - Redo Tag taxonomy and make tag notes in the 'Tags' section above.
 - Verify that EPEL7 filters work correctly, as well as make the filter date a variable so you can schedule this monthly in Ansible Tower!
 - After subnet is created from hammer, need to manually add remote execution capsule under the web UI for subnet. Not listed in hammer, is there a way to use API call to add this?
