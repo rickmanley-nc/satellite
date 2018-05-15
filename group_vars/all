@@ -3,7 +3,6 @@
 laptop_hostname: laptop.rnelson-demo.com
 laptop_ip: 192.168.126.1
 
-
 #Satellite Configure section#
 satellite_admin_username: admin
 satellite_admin_password: redhat
@@ -14,19 +13,21 @@ satellite_hostname: satellite.rnelson-demo.com
 satellite_ip: 192.168.126.2
 satellite_rdns: 126.168.192.in-addr.arpa
 satellite_dhcp_range: "192.168.126.150 192.168.126.200"
-satellite_nic: ens3
+satellite_nic: ens3 ##may need to change to eth0
 satellite_manifest_filename: manifest-rnelson-sales-6.3.zip
 
 ##Satellite kickstart section#
-satellite_disk: sda
+satellite_disk: sda ## may have to change to vda
 satellite_vcpus: 4
 satellite_memory: 12228
+satellite_kickstart_root_password: RedHat1!
+ansible_kickstart_password: RedHat1!
 ##LibVirt Storage and Network Variables##
 libvirt_storage_pool_name: Images
 libvirt_ip_address:        192.168.126.1
 libvirt_netmask:           255.255.255.0
 libvirt_bridge_name:       virbr3
-libvirt_network_name:      rnelson-demo
+libvirt_network_name:      sat-isolated
 
 #not sure how to make this easy yet. A BZ was filed for making this easier and I think this was resolved in Feb 2018.
 development_subscription_ids:

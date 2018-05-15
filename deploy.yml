@@ -2,6 +2,18 @@
 - hosts: all
 
   tasks:
+    - name: Generate the root password hash for kickstart template (would prefer a prompt, as password is stored in variables file)
+      local_action: command python -c 'import crypt; print crypt.crypt("{{ satellite_kickstart_root_password }}", "$6$3dgaQk0H")'
+      register: root_pass_hash
+      tags:
+        - kickstart
+
+    - name: Generate the ansible user password hash for kickstart template (would prefer a prompt, as password is stored in variables file)
+      local_action: command python -c 'import crypt; print crypt.crypt("{{ ansible_kickstart_password }}", "$6$3dgaQk0H")'
+      register: ansible_pass_hash
+      tags:
+        - kickstart
+
     - name: Create Satellite Kickstart file
       template:
         src: "../templates/satellite-ks.cfg.j2"
@@ -16,12 +28,16 @@
         - deploy
 
     - name: Install DEMO-Satellite from Kickstart
-      command: virt-install --name DEMO-Satellite --memory {{satellite_memory}} --vcpus {{satellite_vcpus}} --disk size=30,pool={{libvirt_storage_pool_name}} --location /home/{{laptop_local_user}}/{{libvirt_storage_pool_name}}/original/rhel-server-7.4-x86_64-dvd.iso --extra-args "ks=http://{{libvirt_ip_address}}/satellite-ks.cfg" --os-type linux --noautoconsole
+      command: virt-install --name DEMO-Satellite --memory {{satellite_memory}} --vcpus {{satellite_vcpus}} --disk size=125,pool={{libvirt_storage_pool_name}} --location /home/{{laptop_local_user}}/{{libvirt_storage_pool_name}}/original/rhel-server-7.4-x86_64-dvd.iso --extra-args "ks=http://{{libvirt_ip_address}}/satellite-ks.cfg" --os-type linux --noautoconsole
       tags: deploy
 
-    - name: WAIT 5 minutes
+    - name: WAIT 7 minutes (would prefer some method of monitoring via virsh or qemu)
       wait_for:
-        timeout: 300
+        timeout: 420
+      tags: deploy
+
+    - name: Update Network Source from 'default' to '{{libvirt_network_name}}'
+      script: files/vifmove.sh DEMO-Satellite - {{libvirt_network_name}}
       tags: deploy
 
     - name: Start the VM

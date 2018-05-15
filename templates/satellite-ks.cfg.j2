@@ -20,7 +20,9 @@ network  --bootproto=static --device={{satellite_nic}} --gateway={{libvirt_ip_ad
 network  --hostname={{satellite_hostname}}
 
 # Root password
-rootpw --iscrypted $6$rTc3momYgYqHuJmS$SnxjDXt.AmPtN9utg6f6wkzUJZsWPe37S2Y.5l2.fROSt6hN3t4I5x4fL/qjinGNRsOd6FMewUYdpAm7NpdEq0
+rootpw --iscrypted {{ root_pass_hash.stdout }}
+# Create ansible user for post-configuration needs
+user --name=ansible --groups=wheel --password={{ansible_pass_hash.stdout}}
 # System services
 services --enabled="chronyd"
 # System timezone
