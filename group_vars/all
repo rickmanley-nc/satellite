@@ -2,6 +2,7 @@
 #Laptop Configure section#
 laptop_hostname: laptop.rnelson-demo.com
 laptop_ip: 192.168.126.1
+laptop_local_user: rnelson
 
 #Satellite Configure section#
 satellite_admin_username: admin
