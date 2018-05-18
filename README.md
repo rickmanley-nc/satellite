@@ -65,6 +65,7 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Remaining Items to Complete
 
+- Enable setup through wget of run.sh, similar to tower repo.
 - Go goferless: https://access.redhat.com/articles/3154811
 - Enable remote execution
 - update kickstart template with laptop_local_user and ssh key
