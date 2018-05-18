@@ -15,6 +15,29 @@
   command: hammer proxy import-classes --environment production --name {{satellite_hostname}}
   tags: provision
 
+#from kbase https://access.redhat.com/solutions/3217081
+
+- name: Register ID value in specific Smart Class Parameters for the foreman_scap_client puppet class that's missing a default value
+  shell: hammer --output='csv' sc-param list --puppet-class "foreman_scap_client" --search="{{ item }}" | tail -n+2 | cut -d ',' -f 1
+  with_items:
+    - parameter=policies
+    - parameter=server
+    - parameter=port
+  register: smartclass
+  tags: provision
+
+- name: Update default Smart Class Parameters for the foreman_scap_client puppet class POLICIES
+  command: hammer sc-param update --override yes --id {{smartclass.results[0].stdout}} --default-value '<%= @host.policies_enc %>'
+  tags: provision
+
+- name: Update default Smart Class Parameters for the foreman_scap_client puppet class SERVER
+  command: hammer sc-param update --override yes --id {{smartclass.results[1].stdout}} --default-value '$(hostname -f)'
+  tags: provision
+
+- name: Update default Smart Class Parameters for the foreman_scap_client puppet class PORT
+  command: hammer sc-param update --override yes --id {{smartclass.results[2].stdout}} --default-value '9090'
+  tags: provision
+
 - name: Create Host Group for Development
   command: hammer hostgroup create --name RHEL7_Development_Servers --query-organization {{satellite_organization}} --organizations {{satellite_organization}} --locations {{satellite_location}} --lifecycle-environment Development --content-view Development-RHEL7 --environment production --puppet-ca-proxy {{satellite_hostname}} --puppet-proxy {{satellite_hostname}} --content-source-id 1 --openscap-proxy-id 1 --compute-profile-id 1 --domain {{satellite_domain}} --subnet vlan_126 --puppet-classes access_insights_client,foreman_scap_client,foreman_scap_client::params --architecture x86_64 --operatingsystem 'RedHat 7.4' --partition-table 'Kickstart default' --pxe-loader 'PXELinux BIOS' --root-pass {{hostgroup_root_pass}}
   tags: provision

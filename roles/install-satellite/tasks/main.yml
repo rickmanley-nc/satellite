@@ -11,34 +11,17 @@
 #  when: not satellite_is_installed
   tags: install
 
-#- name: Scenario 1 Run satellite-installer (without DHCP, DNS, TFTP)
-#  shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-ipa-authentication=false
-#  when: not satellite_is_installed
-#  tags: satellite
-
-#- name: Scenario 2 Run satellite-installer (with DHCP and TFTP, without DNS) Unable to PXE without DNS server to verify satellite.rnelson-demo.com. Possibly IdM's DNS, but did that fail? to resolve dl.fedoraproject.org while successfully resolving fedoraproject.org during the EPEL GPG key download. Need to test hosting GPG key instead of attempting to download.
-#  shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface ens3 --foreman-proxy-dhcp-range "192.168.126.150 192.168.126.200" --foreman-proxy-dhcp-gateway 192.168.126.1 --foreman-proxy-dhcp-nameservers 192.168.126.2 --foreman-proxy-tftp true --foreman-proxy-tftp-servername "{{satellite_hostname}}" --foreman-proxy-puppetca true --enable-foreman-plugin-openscap --foreman-ipa-authentication=false
-#  when: not satellite_is_installed
-#  tags: satellite
-
-#testing updated scenario 3 with full variable list
-#- name: Scenario 3 Run satellite-installer (with DHCP, TFTP, DNS)
-  #shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-proxy-dns true --foreman-proxy-dns-interface ens3 --foreman-proxy-dns-zone "{{satellite_domain}}" --foreman-proxy-dns-forwarders 192.168.126.1 --foreman-proxy-dns-reverse 126.168.192.in-addr.arpa --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface ens3 --foreman-proxy-dhcp-range "192.168.126.150 192.168.126.200" --foreman-proxy-dhcp-gateway 192.168.126.1 --foreman-proxy-dhcp-nameservers 192.168.126.2 --foreman-proxy-tftp true --foreman-proxy-tftp-servername $(hostname) --foreman-proxy-puppetca true --enable-foreman-plugin-openscap --foreman-ipa-authentication=false
-#  when: not satellite_is_installed
-#  tags: install
-
-- name: Scenario 3 Run satellite-installer (with DHCP, TFTP, DNS)
+- name: Run satellite-installer (with DHCP, TFTP, DNS)
   shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-proxy-dns true --foreman-proxy-dns-interface "{{ satellite_nic }}" --foreman-proxy-dns-zone "{{satellite_domain}}" --foreman-proxy-dns-forwarders "{{ laptop_ip }}" --foreman-proxy-dns-reverse "{{ satellite_rdns }}" --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface "{{ satellite_nic }}" --foreman-proxy-dhcp-range "{{ satellite_dhcp_range }}" --foreman-proxy-dhcp-gateway "{{ laptop_ip }}" --foreman-proxy-dhcp-nameservers "{{ satellite_ip }}" --foreman-proxy-tftp true --foreman-proxy-tftp-servername $(hostname) --foreman-proxy-puppetca true --enable-foreman-plugin-openscap --foreman-ipa-authentication=false
   tags: install
 
-- name: Scenario 3 Update resolv.conf to have Satellite point to itself for DNS resolution
+- name: Update resolv.conf to have Satellite point to itself for DNS resolution
   lineinfile:
     path: /etc/resolv.conf
     regexp: 'nameserver'
     line: 'nameserver 192.168.126.2'
     state: present
     backrefs: yes
-#  when: not satellite_is_installed
   tags: install
 
 - name: Foreman Template

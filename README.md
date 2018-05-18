@@ -32,8 +32,6 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 
 - Once you have your manifest, you'll need to verify which subscriptions are attached to the activation keys in `roles/activation-keys/tasks/main.yml`. We're using hammer output to search for the RHEL Server Premium and EPEL subscriptions. This can be restructured to search for any other subscriptions by changing the '--search' argument.
 
-- There are 3 different scenarios for installing Satellite. I have this hard coded for Scenario 3 (install with DHCP, TFTP, and DNS). The other scenarios have not been tested.
-
 - If the playbook fails, it is not idempotent yet. You will likely need to delete the deployed VM and kick of the playbook again. Some of this is due to improper tagging, some because there's not a 'hammer' module, and some due to not having the correct conditionals. The 'check-for-existing-satellite' role is not used as effectively as it could, and that's something I'm currently working on.
 
 
