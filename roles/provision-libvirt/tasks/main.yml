@@ -27,7 +27,7 @@
   tags: provision
 
 - name: Update default Smart Class Parameters for the foreman_scap_client puppet class POLICIES
-  command: hammer sc-param update --override yes --id {{smartclass.results[0].stdout}} --default-value '<%= @host.policies_enc %>'
+  command: hammer sc-param update --override yes --id {{smartclass.results[0].stdout}} --default-value '<%= @host.policies_enc %>' --parameter-type array
   tags: provision
 
 - name: Update default Smart Class Parameters for the foreman_scap_client puppet class SERVER
