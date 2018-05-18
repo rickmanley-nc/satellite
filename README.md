@@ -18,21 +18,19 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 
 ## Requirements and Steps
 
-- Create host-level network on Laptop, 192.168.126.x on LibVirt - Easy with the 'httpd', 'libvirtd', and 'create-libvirt-network' role within my Laptop-Configure repo: https://github.com/rickmanley-nc/laptop-configure
-- Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "satellite"
-- Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
+- Configure laptop with appropriate 'httpd', 'libvirtd', and 'create-libvirt-network' roles from the following repo: https://github.com/rickmanley-nc/laptop-configure
+- Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "ak-satellite"
+- Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
   - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
     - Copy the manifest to /var/www/html
     - Run 'restorecon' against /var/www/html
-- Update group_vars/all
+- Update `group_vars/all` with your desired variables
 
 ## Gotchas!
 
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
-- Currently testing new deploy.yml. I have this working on my Tower role, and will be syncing the deploy.yml over in the next uploads.
-- Within group_vars/all, both development_subscription_ids and lab_subscription_ids are dependent on your manifest. I have several different subscriptions on my test account, and the ordering of them is not logical. Currently the 'hammer' tool has to connect through a numerical Subscription ID. This is something that could be done by querying 'hammer subscription list' and filtering on specific subscription names to then store the Sub ID. I haven't gotten to this yet, but it's doable.
-  - Another option is to plan to have an account
+- Once you have your manifest, you'll need to verify which subscriptions are attached to the activation keys in `roles/activation-keys/tasks/main.yml`. We're using hammer output to search for the RHEL Server Premium and EPEL subscriptions. This can be restructured to search for any other subscriptions by changing the '--search' argument.
 
 - There are 3 different scenarios for installing Satellite. I have this hard coded for Scenario 3 (install with DHCP, TFTP, and DNS). The other scenarios have not been tested.
 
@@ -58,7 +56,7 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 - ccv-RHEL7-EAP7
 - activation-keys
 - provision-libvirt
-- ansible-tower-sync-prep
+- ansible-tower-sync-prep (not used yet)
 
 ## Vars
 
@@ -69,20 +67,18 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Remaining Items to Complete
 
-- Update deploy.yml to kickstart vs the original manual gold image build.
+- Go goferless: https://access.redhat.com/articles/3154811
+- Enable remote execution
+- update kickstart template with laptop_local_user and ssh key
 - Redo Tag taxonomy and make tag notes in the 'Tags' section above.
-- Verify that EPEL7 filters work correctly, as well as make the filter date a variable so you can schedule this monthly in Ansible Tower!
-- After subnet is created from hammer, need to manually add remote execution capsule under the web UI for subnet. Not listed in hammer, is there a way to use API call to add this?
-- Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, https://projects.theforeman.org/issues/6344
-- Need to inherit puppet environment to location before host group creation.
-- Need to manually create hostgroups, medium not found during hammer execution. Looks like an easy fix, but the formatting changed from 6.2 to 6.3. Just need to determine new path.
+- Make role notes
+- Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
+- Need to manually update Remote Execution on subnet. Hammer commands do not currently exist and there is no API: https://bugzilla.redhat.com/show_bug.cgi?id=1370460, http://projects.theforeman.org/issues/15249, http://projects.theforeman.org/issues/21231
+- Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, and there is no API: https://projects.theforeman.org/issues/6344
 - Need to manually create OpenSCAP policy AFTER hostgroup is created. Create both Standard with tailoring file and STIG build... likely remove some requirements from STIG that require 3rd party applications to be installed.
 - Break OpenSCAP out into its own role, including uploading the tailoring files. https://github.com/Ansible-Security-Compliance
 - Copy existing partition templates and make a role for STIG builds. After importing template, will need to run the following command to add OS version: # hammer partition-table add-operatingsystem --name "Kickstart default - STIG" --operatingsystem "RedHat 7.4"
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
-- Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
-- Make role notes
-- Update Gold Image Build with proper partition layout... or preferably have a separate ansible role with variables for CPU, RAM, and Network settings to then build from ISO? This has been done in other projects, but not sure the best path here.
 
 ## License
 

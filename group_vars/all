@@ -23,20 +23,16 @@ satellite_vcpus: 4
 satellite_memory: 12228
 satellite_kickstart_root_password: RedHat1!
 ansible_kickstart_password: RedHat1!
+
+##Hostgroup root password##
+hostgroup_root_pass: RedHat1!
+
 ##LibVirt Storage and Network Variables##
 libvirt_storage_pool_name: Images
 libvirt_ip_address:        192.168.126.1
 libvirt_netmask:           255.255.255.0
 libvirt_bridge_name:       virbr3
 libvirt_network_name:      sat-isolated
-
-#not sure how to make this easy yet. A BZ was filed for making this easier and I think this was resolved in Feb 2018.
-development_subscription_ids:
-  - 7 #RHEL Server
-  - 10 #EPEL
-
-lab_subscription_ids:
-  - 7 #RHEL Server
 
 satellite_repos:
   - rhel-7-server-rpms
