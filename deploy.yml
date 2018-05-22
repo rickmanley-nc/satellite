@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  connection: local
 
   tasks:
     - name: Generate the root password hash for kickstart template (would prefer a prompt, as password is stored in variables file)
@@ -19,16 +20,19 @@
         src: "../templates/satellite-ks.cfg.j2"
         dest: /var/www/html/satellite-ks.cfg
         mode: 0644
+      become: yes
       tags:
         - kickstart
 
     - name:     restorecon on /var/www/html (this should really be a notify if we create the kickstart or generate the template)
       command:  restorecon -Rv /var/www/html
+      become: yes
       tags:
         - deploy
 
     - name: Install DEMO-Satellite from Kickstart
       command: virt-install --name DEMO-Satellite --memory {{satellite_memory}} --vcpus {{satellite_vcpus}} --disk size=125,pool={{libvirt_storage_pool_name}} --location /home/{{laptop_local_user}}/{{libvirt_storage_pool_name}}/original/rhel-server-7.4-x86_64-dvd.iso --extra-args "ks=http://{{libvirt_ip_address}}/satellite-ks.cfg" --os-type linux --noautoconsole
+      become: yes
       tags: deploy
 
     - name: WAIT 7 minutes (would prefer some method of monitoring via virsh or qemu)
@@ -38,10 +42,12 @@
 
     - name: Update Network Source from 'default' to '{{libvirt_network_name}}'
       script: files/vifmove.sh DEMO-Satellite - {{libvirt_network_name}}
+      become: yes
       tags: deploy
 
     - name: Start the VM
       command: virsh start DEMO-Satellite
+      become: yes
       tags: deploy
 
     - name: Wait for SSH to come up on Satellite

@@ -29,7 +29,7 @@
   tags: activation-key
 
 - name: Attach subscriptions to Activation Key for Lab
-  command: hammer activation-key add-subscription --name ak-Reg_To_Lab-rhel7 --subscription-id {{ epel_subid.stdout }} --organization "{{satellite_organization}}"
+  command: hammer activation-key add-subscription --name ak-Reg_To_Lab-rhel7 --subscription-id {{ rhel_server_premium_subid.stdout }} --organization "{{satellite_organization}}"
   tags: activation-key
 
 - name: Enable Sat Tools 6.3 channel in Lab Activation Key

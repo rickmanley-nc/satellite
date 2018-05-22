@@ -25,6 +25,8 @@ After kicking off the playbook (on a decent wifi connection, this will take just
     - Copy the manifest to /var/www/html
     - Run 'restorecon' against /var/www/html
 - Update `group_vars/all` with your desired variables
+- Execute the following command to fully deploy and configure Satellite on your laptop:
+  - `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run.sh | bash`
 
 ## Gotchas!
 
@@ -65,6 +67,8 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Remaining Items to Complete
 
+- Breakout list of subscriptions used for this environment. (RHEL Server, Gluster, JBoss EAP)
+- Fix LAB activation key (currently doesn't have EAP subscription)
 - Enable setup through wget of run.sh, similar to tower repo.
 - Go goferless: https://access.redhat.com/articles/3154811
 - Enable remote execution
