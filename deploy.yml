@@ -35,9 +35,13 @@
       become: yes
       tags: deploy
 
-    - name: WAIT 7 minutes (would prefer some method of monitoring via virsh or qemu)
-      wait_for:
-        timeout: 420
+    - name: check that DEMO-Satellite VM is stopped
+      action: virt name=DEMO-Satellite command=status
+      register: result
+      until: result.status.find("shutdown") != -1
+      retries: 100
+      delay: 5
+      become: yes
       tags: deploy
 
     - name: Update Network Source from 'default' to '{{libvirt_network_name}}'

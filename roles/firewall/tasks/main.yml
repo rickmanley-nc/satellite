@@ -1,7 +1,6 @@
 ---
 - name: Start and Enable firewalld
   systemd: name=firewalld state=started enabled=yes
-#  when: not satellite_is_installed
   tags: firewall
 
 - name: Configure firewalld
@@ -11,5 +10,4 @@
     immediate: yes
     state: enabled
   with_items: "{{ satellite_ports }}"
-#  when: not satellite_is_installed
   tags: firewall

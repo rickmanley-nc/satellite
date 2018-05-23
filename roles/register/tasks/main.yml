@@ -3,6 +3,7 @@
   command: subscription-manager status
   register: result
   ignore_errors: True
+  tags: register
 
 - name: Register to RHN and attach Satellite SKU through Activation Key
   redhat_subscription:

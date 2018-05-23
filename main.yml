@@ -6,6 +6,7 @@
 
 - name: Configure OS
   hosts: all
+  become: yes
   roles:
     - hostname
     - firewall
@@ -14,6 +15,7 @@
 
 - name: Install and Configure Satellite
   hosts: all
+  become: yes
   roles:
     - install-satellite
     - manifest

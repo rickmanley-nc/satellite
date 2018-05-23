@@ -22,7 +22,7 @@ network  --hostname={{satellite_hostname}}
 # Root password
 rootpw --iscrypted {{ root_pass_hash.stdout }}
 # Create ansible user for post-configuration needs
-user --name=ansible --groups=wheel --password={{ansible_pass_hash.stdout}}
+user --name=ansible --groups=wheel --iscrypted --password="{{ansible_pass_hash.stdout}}"
 # System services
 services --enabled="chronyd"
 # System timezone
