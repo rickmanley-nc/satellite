@@ -26,13 +26,15 @@ After kicking off the playbook (on a decent wifi connection, this will take just
     - Run 'restorecon' against /var/www/html
 - Update `group_vars/all` with your desired variables
 - Execute the following command to fully deploy and configure Satellite on your laptop:
-  - `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run.sh | bash`
+  - ***testing*** `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run.sh | bash`
 
 ## Gotchas!
 
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
 - Once you have your manifest, you'll need to verify which subscriptions are attached to the activation keys in `roles/activation-keys/tasks/main.yml`. We're using hammer output to search for the RHEL Server Premium and EPEL subscriptions. This can be restructured to search for any other subscriptions by changing the '--search' argument.
+
+- Using the 'wget' method with run.sh doesn't work completely yet due to missing 'become' arguments. You can execute the playbook as 'root' user and it will work as expected. I'm currently working through adding the necessary 'become' arguments.
 
 - If the playbook fails, it is not idempotent yet. You will likely need to delete the deployed VM and kick of the playbook again. Some of this is due to improper tagging, some because there's not a 'hammer' module, and some due to not having the correct conditionals. The 'check-for-existing-satellite' role is not used as effectively as it could, and that's something I'm currently working on.
 
