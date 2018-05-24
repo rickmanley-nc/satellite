@@ -18,7 +18,7 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 
 ## Requirements and Steps
 
-- Configure laptop with appropriate 'httpd', 'libvirtd', and 'create-libvirt-network' roles from the following repo: https://github.com/rickmanley-nc/laptop-configure
+- Configure laptop with appropriate `httpd`, `libvirtd`, and `create-libvirt-network` roles from the following repo: https://github.com/rickmanley-nc/laptop-configure
 - Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "ak-satellite"
 - Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
   - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
@@ -33,8 +33,6 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
 - Once you have your manifest, you'll need to verify which subscriptions are attached to the activation keys in `roles/activation-keys/tasks/main.yml`. We're using hammer output to search for the RHEL Server Premium and EPEL subscriptions. This can be restructured to search for any other subscriptions by changing the '--search' argument.
-
-- Using the 'wget' method with run.sh doesn't work completely yet due to missing 'become' arguments. You can execute the playbook as 'root' user and it will work as expected. I'm currently working through adding the necessary 'become' arguments.
 
 - If the playbook fails, it is not idempotent yet. You will likely need to delete the deployed VM and kick of the playbook again. Some of this is due to improper tagging, some because there's not a 'hammer' module, and some due to not having the correct conditionals. The 'check-for-existing-satellite' role is not used as effectively as it could, and that's something I'm currently working on.
 
@@ -71,7 +69,6 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 - Breakout list of subscriptions used for this environment. (RHEL Server, Gluster, JBoss EAP)
 - Fix LAB activation key (currently doesn't have EAP subscription)
-- Enable setup through wget of run.sh, similar to tower repo.
 - Go goferless: https://access.redhat.com/articles/3154811
 - Enable remote execution
 - update kickstart template with laptop_local_user and ssh key
