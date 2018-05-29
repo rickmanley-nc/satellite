@@ -32,6 +32,7 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 - Execute the following command to fully deploy and configure Satellite with integration to an existing IdM server on your laptop:
   - `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run-idm-integrated.sh | bash`
 
+
 ## Gotchas!
 
 I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
@@ -65,14 +66,10 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 - ccv-RHEL7-EAP7
 - activation-keys
 - provision-libvirt
-#    - ansible-tower-sync-prep
+- ansible-tower-sync-prep
 
-## Vars
 
-All variables are located in `group_vars/all`. Update that file with your environment details.
-
-## Tags
-
+## Variables
 
 ## Remaining Items to Complete
 
@@ -80,7 +77,6 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 - Fix LAB activation key (currently doesn't have EAP subscription)
 - Go goferless: https://access.redhat.com/articles/3154811
 - Enable remote execution
-- Redo Tag taxonomy and make tag notes in the 'Tags' section above.
 - Need to manually update Remote Execution on subnet. Hammer commands do not currently exist and there is no API: https://bugzilla.redhat.com/show_bug.cgi?id=1370460, http://projects.theforeman.org/issues/15249, http://projects.theforeman.org/issues/21231
 - Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, and there is no API: https://projects.theforeman.org/issues/6344
 - Copy existing partition templates and make a role for STIG builds. After importing template, will need to run the following command to add OS version: # hammer partition-table add-operatingsystem --name "Kickstart default - STIG" --operatingsystem "RedHat 7.4"
