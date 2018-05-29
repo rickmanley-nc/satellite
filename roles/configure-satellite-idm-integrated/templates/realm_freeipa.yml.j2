@@ -1,0 +1,8 @@
+---
+# Authentication for Kerberos-based Realms
+:keytab_path: /etc/foreman-proxy/freeipa.keytab
+:principal: realm-capsule@{{idm_realm}}
+
+:ipa_config: /etc/ipa/default.conf
+# Remove from DNS when deleting the FreeIPA entry
+:remove_dns: true

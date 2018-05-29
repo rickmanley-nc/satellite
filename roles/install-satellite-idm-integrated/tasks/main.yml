@@ -8,6 +8,11 @@
     - satellite-clone
     - puppet-foreman_scap_client
     - NetworkManager-glib  # needed for nmcli module to talk to satellite
+    - mod_authnz_pam  # needed for dbus error pre-run of satellite-installer
+    - mod_intercept_form_submit # needed for dbus error pre-run of satellite-installer
+    - sssd-dbus # needed for dbus error pre-run of satellite-installer
+    - mod_lookup_identity # needed for dbus error pre-run of satellite-installer
+    - ipa-client # needed for dbus error pre-run of satellite-installer
   tags: install
 
 - name: Need to reboot for dbus error after packages from above task installed

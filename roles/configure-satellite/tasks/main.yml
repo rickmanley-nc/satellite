@@ -1,0 +1,18 @@
+---
+- name: satellite-installer (with embedded DHCP, TFTP, DNS) and NO integration with IdM
+  shell: satellite-installer -v --scenario satellite --foreman-initial-organization "{{satellite_organization}}" --foreman-initial-location "{{satellite_location}}" --foreman-admin-password "{{satellite_admin_password}}" --foreman-proxy-dns true --foreman-proxy-dns-interface "{{ satellite_nic }}" --foreman-proxy-dns-zone "{{satellite_domain}}" --foreman-proxy-dns-forwarders "{{ laptop_ip }}" --foreman-proxy-dns-reverse "{{ satellite_rdns }}" --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface "{{ satellite_nic }}" --foreman-proxy-dhcp-range "{{ satellite_dhcp_range }}" --foreman-proxy-dhcp-gateway "{{ laptop_ip }}" --foreman-proxy-dhcp-nameservers "{{ satellite_ip }}" --foreman-proxy-tftp true --foreman-proxy-tftp-servername $(hostname) --foreman-proxy-puppetca true --enable-foreman-plugin-openscap --foreman-ipa-authentication=false
+  tags: install
+
+- name: Modify default DNS of {{satellite_nic}} to point to itself
+  nmcli:
+    conn_name: "System ens3"
+    type: ethernet
+    dns4: "{{satellite_ip}}"
+    state: present
+  tags: install
+
+- name: restart NetworkManager to pick up updated DNS from previous task
+  systemd:
+    name: NetworkManager
+    state: restarted
+  tags: install

@@ -39,7 +39,7 @@
   tags: provision
 
 - name: Create Host Group for Development
-  command: hammer hostgroup create --name RHEL7_Development_Servers --query-organization {{satellite_organization}} --organizations {{satellite_organization}} --locations {{satellite_location}} --lifecycle-environment Development --content-view Development-RHEL7 --environment production --puppet-ca-proxy {{satellite_hostname}} --puppet-proxy {{satellite_hostname}} --content-source-id 1 --openscap-proxy-id 1 --compute-profile-id 1 --domain {{satellite_domain}} --subnet vlan_126 --puppet-classes access_insights_client,foreman_scap_client,foreman_scap_client::params --architecture x86_64 --operatingsystem 'RedHat 7.4' --partition-table 'Kickstart default' --pxe-loader 'PXELinux BIOS' --root-pass {{hostgroup_root_pass}}
+  command: hammer hostgroup create --name RHEL7_Development_Servers --query-organization {{satellite_organization}} --organizations {{satellite_organization}} --locations {{satellite_location}} --lifecycle-environment Development --content-view Development-RHEL7 --environment production --puppet-ca-proxy {{satellite_hostname}} --puppet-proxy {{satellite_hostname}} --content-source-id 1 --openscap-proxy-id 1 --compute-profile-id 1 --domain {{satellite_domain}} --realm {{ idm_realm }} --subnet vlan_126 --puppet-classes access_insights_client,foreman_scap_client,foreman_scap_client::params --architecture x86_64 --operatingsystem 'RedHat 7.4' --partition-table 'Kickstart default' --pxe-loader 'PXELinux BIOS' --root-pass {{hostgroup_root_pass}}
   tags: provision
 
 - name: Set Host Group "RHEL 7 Development Servers" activation keys to "ak-Reg_To_Development-rhel7"
@@ -47,7 +47,7 @@
   tags: provision
 
 - name: Create Host Group for Lab
-  command: hammer hostgroup create --name RHEL7_Lab_Servers --query-organization {{satellite_organization}} --organizations {{satellite_organization}} --locations {{satellite_location}} --lifecycle-environment Lab --content-view Lab-RHEL7-EAP7 --environment production --puppet-ca-proxy {{satellite_hostname}} --puppet-proxy {{satellite_hostname}} --content-source-id 1 --openscap-proxy-id 1 --compute-profile-id 1 --domain {{satellite_domain}} --subnet vlan_126 --puppet-classes access_insights_client,foreman_scap_client,foreman_scap_client::params --architecture x86_64 --operatingsystem 'RedHat 7.4' --partition-table 'Kickstart default' --pxe-loader 'PXELinux BIOS' --root-pass {{hostgroup_root_pass}}
+  command: hammer hostgroup create --name RHEL7_Lab_Servers --query-organization {{satellite_organization}} --organizations {{satellite_organization}} --locations {{satellite_location}} --lifecycle-environment Lab --content-view Lab-RHEL7-EAP7 --environment production --puppet-ca-proxy {{satellite_hostname}} --puppet-proxy {{satellite_hostname}} --content-source-id 1 --openscap-proxy-id 1 --compute-profile-id 1 --domain {{satellite_domain}} --realm {{ idm_realm }} --subnet vlan_126 --puppet-classes access_insights_client,foreman_scap_client,foreman_scap_client::params --architecture x86_64 --operatingsystem 'RedHat 7.4' --partition-table 'Kickstart default' --pxe-loader 'PXELinux BIOS' --root-pass {{hostgroup_root_pass}}
   tags: provision
 
 - name: Set Host Group "RHEL 7 Lab Servers" activation keys to "ak-Reg_To_Lab-rhel7"
