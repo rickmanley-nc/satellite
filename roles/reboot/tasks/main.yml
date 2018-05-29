@@ -1,0 +1,14 @@
+---
+- name: Need to reboot due to foreman not picking up correct realm_freeipa.yml during host creation
+  shell: sleep 10 && /sbin/shutdown -r now
+  async: 300
+  poll: 0
+
+- name: waiting for server to boot up
+  local_action: wait_for
+  args:
+    host: "{{satellite_hostname}}"
+    port: 22
+    delay: 30
+    timeout: 600
+    state: started

@@ -33,3 +33,4 @@
     - activation-keys
     - provision-libvirt
 #    - ansible-tower-sync-prep
+    - reboot
