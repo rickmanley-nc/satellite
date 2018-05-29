@@ -1,0 +1,148 @@
+---
+- name: restart NetworkManager (https://access.redhat.com/solutions/3416301)
+  systemd:
+    name: NetworkManager
+    state: restarted
+  tags: prep-for-idm
+
+- name: Modify default DNS of {{satellite_nic}}
+  nmcli:
+    conn_name: "System ens3"
+    type: ethernet
+    dns4:
+      - "{{idm_ip_address}}"
+      - "{{satellite_ip}}"
+    state: present
+  tags: prep-for-idm
+
+- name: restart NetworkManager to pick up updated DNS from previous task
+  systemd:
+    name: NetworkManager
+    state: restarted
+  tags: prep-for-idm
+
+- name: Enroll Satellite to IdM Server
+  command: ipa-client-install -U --enable-dns-updates --ssh-trust-dns --mkhomedir -p {{idm_register_username}} -w {{idm_register_password}}
+  tags: prep-for-idm
+
+- name: adding http service for satellite
+  ipa_service:
+    name: HTTP/satellite.rnelson-demo.com
+    state: present
+    ipa_host: "{{idm_hostname}}"
+    ipa_user: "{{idm_register_username}}"
+    ipa_pass: "{{idm_register_password}}"
+  tags: prep-for-idm
+
+- name: Create directory to store certificates
+  file:
+    path: /root/certs
+    state: directory
+    mode: 0755
+  tags: prep-for-idm
+
+- name: Generate private key
+  openssl_privatekey:
+    path: /root/certs/key.pem
+    type: RSA
+    size: 2048
+  tags: prep-for-idm
+
+- name: Create Certificate Signing Request (CSR) - does not work yet since this requires PyOpenSSL to be at version 15+. Currently only version 13 is shipped from RedHat.
+  openssl_csr:
+    path: /root/certs/satellite_rnelson-demo_com.csr
+    privatekey_path: /root/certs/key.pem
+    country_name: US
+    state_or_province_name: RDU
+    locality_name: RDU
+    organization_name: RedHat
+    organizational_unit_name: Ops
+    common_name: "{{satellite_hostname}}"
+  ignore_errors: true
+  tags: prep-for-idm
+
+- name: Workaround for creating csr
+  command: openssl req -nodes -newkey rsa:2048 -keyout /root/certs/key.pem -out /root/certs/satellite_rnelson-demo_com.csr -subj "/CN={{satellite_hostname}}"
+  tags: prep-for-idm
+
+- name: obtaining TGT for admin@rnelson-demo.com (This is a no-no... proper way is to create a keytab for the principal and auth with -k -t /path/to/keytab)
+  shell: echo "{{idm_register_password}}" | kinit "{{idm_register_username}}"@"{{idm_realm}}"
+  tags: prep-for-idm
+
+- name: register serial number of CSR during IPA cert Request
+  shell: ipa cert-request --add --principal=host/"{{satellite_hostname}}" /root/certs/satellite_rnelson-demo_com.csr | grep "number:" | cut -d ' ' -f5
+  register: serial
+  tags: prep-for-idm
+
+- name: Create CRT from serial number
+  shell: ipa cert-show --out /root/certs/satellite_rnelson-demo_com.crt "{{serial.stdout}}"
+  tags: prep-for-idm
+
+- name: Generate ssh key for foreman
+  shell: ssh-keygen -f /usr/share/foreman/.ssh/id_rsa -t rsa -N ''
+  tags: prep-for-idm
+
+- name: Need laptop ssh key... need to document why
+  shell: ssh-keyscan -t ecdsa rnelsonlaptop.demo.com > /usr/share/foreman/.ssh/known_hosts
+  tags: prep-for-idm
+
+- name: ensure foreman owns all of .ssh directory
+  file:
+    path: /usr/share/foreman/.ssh
+    owner: foreman
+    group: foreman
+    recurse: yes
+  tags: prep-for-idm
+
+- name: Run katello-certs-check
+  command: katello-certs-check -b /etc/ipa/ca.crt -k /root/certs/key.pem -c /root/certs/satellite_rnelson-demo_com.crt -r /root/certs/satellite_rnelson-demo_com.csr CERT_ARGS="--certs-server-ca-cert=/etc/ipa/ca.crt --certs-server-key=/root/certs/key.pem --certs-server-cert=/root/certs/satellite_rnelson-demo_com.crt --certs-server-cert-req=/root/certs/satellite_rnelson-demo_com.csr"
+  tags: prep-for-idm
+
+- name: Prepare Foreman Realm
+  shell: echo "{{idm_register_password}}" | foreman-prepare-realm "{{idm_register_username}}" realm-capsule
+  tags: prep-for-idm
+
+- name: Workaround for foreman-prepare-realm not downloading the keytab while in ansible
+  command: ipa-getkeytab -s {{idm_hostname}} -p realm-capsule@{{idm_realm}} -k /etc/foreman-proxy/freeipa.keytab
+  tags: prep-for-idm
+
+- name: Copy freeipa.keytab to foreman-proxy directory
+  file:
+    path: /etc/foreman-proxy/freeipa.keytab
+    owner: foreman-proxy
+    group: foreman-proxy
+    mode: 0600
+  tags: prep-for-idm
+
+- name: Copy IPA CA certificate to be trusted by Satellite
+  copy:
+    src: /etc/ipa/ca.crt
+    dest: /etc/pki/ca-trust/source/anchors/ipa.crt
+    remote_src: yes
+  tags: prep-for-idm
+
+- name: Enable update-ca-trust
+  command: update-ca-trust enable
+  tags: prep-for-idm
+
+- name: Update CA trust
+  command: update-ca-trust
+  tags: prep-for-idm
+
+- name: satellite-installer (DHCP, DNS, TFTP, and IdM Integration)
+  shell: satellite-installer -v --scenario satellite --foreman-initial-organization RedHat --foreman-initial-location RDU --foreman-admin-password redhat --foreman-proxy-dns true --foreman-proxy-dns-interface ens3 --foreman-proxy-dns-zone rnelson-demo.com --foreman-proxy-dns-forwarders 192.168.126.1 --foreman-proxy-dns-reverse 126.168.192.in-addr.arpa --foreman-proxy-dhcp true --foreman-proxy-dhcp-interface ens3 --foreman-proxy-dhcp-range "192.168.126.150 192.168.126.200" --foreman-proxy-dhcp-gateway 192.168.126.1 --foreman-proxy-dhcp-nameservers 192.168.126.2 --foreman-proxy-tftp true --foreman-proxy-tftp-servername satellite.rnelson-demo.com --foreman-proxy-puppetca true --certs-server-cert "/root/certs/satellite_rnelson-demo_com.crt" --certs-server-cert-req "/root/certs/satellite_rnelson-demo_com.csr" --certs-server-key "/root/certs/key.pem" --certs-server-ca-cert "/etc/ipa/ca.crt" --foreman-proxy-realm=true --foreman-proxy-realm-keytab=/etc/foreman-proxy/freeipa.keytab --foreman-proxy-realm-principal="realm-capsule@RNELSON-DEMO.COM" --foreman-proxy-realm-provider=freeipa --enable-foreman-plugin-openscap --foreman-ipa-authentication=true
+  tags: prep-for-idm
+
+- name: Create IdM realm
+  command: hammer realm create --realm-type='Red Hat Identity Management' --name={{idm_realm}} --realm-proxy-id=1 --locations={{satellite_location}} --organizations={{satellite_organization}}
+  tags: prep-for-idm
+
+- name: Workaround for foreman-installer bug # https://bugzilla.redhat.com/show_bug.cgi?id=1551652
+  template:
+    src: "../templates/realm_freeipa.yml.j2"
+    dest: /etc/foreman-proxy/settings.d/realm_freeipa.yml
+    mode: 0644
+  tags: prep-for-idm
+
+#realm-capsule password expires after 90 days: https://access.redhat.com/solutions/3003001 Is this an issue for longevity of this environment?
+#new builds are pointing to 192.168.126.2 in /etc/resolv.conf. They should be pointed to 192.168.126.4 (the IdM DNS...not the Satellite DNS)

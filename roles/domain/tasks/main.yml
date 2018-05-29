@@ -1,0 +1,4 @@
+---
+- name: Update Domain Settings
+  command: hammer domain update --name "{{satellite_domain}}" --organizations "{{satellite_organization}}" --locations "{{satellite_location}}" --dns "{{satellite_hostname}}"
+  tags: install

@@ -17,8 +17,8 @@
   hosts: all
   become: yes
   roles:
-    - install-satellite
-    - configure-satellite
+    - install-satellite-idm-integrated
+    - configure-satellite-idm-integrated
     - manifest
     - domain
     - openscap

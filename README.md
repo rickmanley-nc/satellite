@@ -4,7 +4,7 @@ This repo is dedicated to building a Satellite 6.3 VM on LibVirt KVM through a s
 I cannot take all the credit. I've learned from many folks within Red Hat and Ansible as well as our customers, and users in the community. Thank you all!
 
 
-After kicking off the playbook (on a decent wifi connection, this will take just under 3 hours consistently), and running through the manual steps listed in section "Remaining Items to Complete", the following Demo, Enablement Session, or Workshop is ready to be delivered:
+After kicking off the playbook (on a decent wifi connection, this will take just under 3 hours consistently, 3.5 hours if with IdM integration), and running through the manual steps listed in section "Remaining Items to Complete", the following Demo, Enablement Session, or Workshop is ready to be delivered:
 
  - General Layout and Overview (I have this listed for those first/initial walkthroughs with customers)
  - Provisioning (against LibVirt)
@@ -13,20 +13,24 @@ After kicking off the playbook (on a decent wifi connection, this will take just
  - Content View filters for EPEL7
  - Red Hat Insights
  - OpenSCAP scanning and reporting against a Standard Policy system and a STIG policy
- - More to come... File Repos, IdM integration, Ansible Tower integration, ...
+ - When installed with IdM integration... RBAC,
+ - More to come... Ansible Tower integration, Gluster integration, OpenShift integration
 
 
 ## Requirements and Steps
 
 - Configure laptop with appropriate `httpd`, `libvirtd`, and `create-libvirt-network` roles from the following repo: https://github.com/rickmanley-nc/laptop-configure
+  - OPTIONAL - Deploy IdM server from https://github.com/rickmanley-nc/laptop-configure
 - Create an Activation Key (from https://access.redhat.com/management/activation_keys) and add at least 1 Satellite subscription to it. Call the Activation Key "ak-satellite"
 - Create a Subscription Allocation (from https://access.redhat.com/management/subscription_allocations) and at least 1 Red Hat Enterprise Linux (and hopefully EAP) subscription to it.
-  - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-sales-6.3.zip', where 'USERNAME' is your username
+  - Download the Subscription Manifest, via the Export Manifest button, and rename it to 'manifest-USERNAME-6.3.zip', where 'USERNAME' is your username
     - Copy the manifest to /var/www/html
     - Run 'restorecon' against /var/www/html
-- Update `group_vars/all` with your desired variables
+- Update `group_vars/all`
 - Execute the following command to fully deploy and configure Satellite on your laptop:
-  - ***testing*** `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run.sh | bash`
+  - `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run.sh | bash`
+- Execute the following command to fully deploy and configure Satellite with integration to an existing IdM server on your laptop:
+  - `wget -qO- https://github.com/rickmanley-nc/satellite/raw/master/run-idm-integrated.sh | bash`
 
 ## Gotchas!
 
@@ -45,7 +49,12 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 - etc-hosts
 - register
 - install-satellite
+- configure-satellite
+- install-satellite-idm-integrated
+- configure-satellite-idm-integrated
 - manifest
+- domain
+- openscap
 - sync-plan
 - lazy-sync
 - lifecycle-environments
@@ -56,7 +65,7 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 - ccv-RHEL7-EAP7
 - activation-keys
 - provision-libvirt
-- ansible-tower-sync-prep (not used yet)
+#    - ansible-tower-sync-prep
 
 ## Vars
 
@@ -67,18 +76,13 @@ All variables are located in `group_vars/all`. Update that file with your enviro
 
 ## Remaining Items to Complete
 
-- Breakout list of subscriptions used for this environment. (RHEL Server, Gluster, JBoss EAP)
+- Breakout list of subscriptions and SKUs needed for this environment. (RHEL Server, Gluster, JBoss EAP)
 - Fix LAB activation key (currently doesn't have EAP subscription)
 - Go goferless: https://access.redhat.com/articles/3154811
 - Enable remote execution
-- update kickstart template with laptop_local_user and ssh key
 - Redo Tag taxonomy and make tag notes in the 'Tags' section above.
-- Make role notes
-- Make use of 'check-for-existing-satellite' tag. Currently it is not utilized and running the playbook will perform actions when we don't want them to.
 - Need to manually update Remote Execution on subnet. Hammer commands do not currently exist and there is no API: https://bugzilla.redhat.com/show_bug.cgi?id=1370460, http://projects.theforeman.org/issues/15249, http://projects.theforeman.org/issues/21231
 - Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, and there is no API: https://projects.theforeman.org/issues/6344
-- Need to manually create OpenSCAP policy AFTER hostgroup is created. Create both Standard with tailoring file and STIG build... likely remove some requirements from STIG that require 3rd party applications to be installed.
-- Break OpenSCAP out into its own role, including uploading the tailoring files. https://github.com/Ansible-Security-Compliance
 - Copy existing partition templates and make a role for STIG builds. After importing template, will need to run the following command to add OS version: # hammer partition-table add-operatingsystem --name "Kickstart default - STIG" --operatingsystem "RedHat 7.4"
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
 

@@ -6,7 +6,7 @@
 #currently not possible to create filters through hammer
 
 #- name: Create 'tower_sync_lab' user
-  command:
+#  command:
 
 - name: Create 'tower_sync_dev' role
   command: hammer role create --name tower_sync_dev
