@@ -7,7 +7,7 @@
     - satellite
     - satellite-clone
     - puppet-foreman_scap_client
-    - NetworkManager-glib  # needed for nmcli module to talk to satellite
+    - NetworkManager-glib  # needed for nmcli module
   tags: install
 
 - name: Need to reboot for dbus error after packages from above task installed

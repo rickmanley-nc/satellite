@@ -1,6 +1,36 @@
 ---
 - hosts: all
   tasks:
+
+In IDM:
+User Group:
+'developer-admin' (Group for developer infrastructure administration)
+'developer' (Group of developers)
+'ansible-admin' (Group for Ansible Tower admins and */ansible* commands through sudo)... this is a nested group
+'operations-admin' (Group for Operations Leads)
+'operations-jr-admin' (Group for Junior Admins in Operations, limited control)
+'lob' (Group for Line of Business end users)
+
+User:
+Tammy Larsen ... uid 'dev-admin' and add 'developer-admin' Group
+Jimmy Pesto ... uid 'dev' and add 'developer' Group
+Turd Ferguson ... uid 'ops-admin' and add 'operations-admin' Group
+Randy Flanders ... uid 'ops-jr' and add 'operations-jr-admin' Group
+Louise Belcher ... uid 'lobuser' and add 'lob' Group
+
+Host Group, development-servers.
+Create Automember role for development-servers, ipa automember-add --type=hostgroup development-servers
+--- need to find out what the regex should be --- Create Automember role condition,  ipa automember-add-condition –-key=userclass --type=hostgroup --inclusive-regex=^Development_Servers development-servers
+
+In Satellite:
+Create User Group that includes an external user group from IdM. 'developer-admin' (Group for developer infrastructure administration). Assign admin-like role for only the developer environment
+Create User Group that includes an external user group from IdM. 'developers' (Group for developers). Assign limited role for developers to view only the systems they own and only have access to Developer environment.
+Create User Group that includes an external user group from IdM. 'lob' (Group for Line of Business end users). Assign role to only allow viewing of systemss they own.
+
+
+
+
+
     - name: Copy ca.crt from IdM server to Satellite
 # scp /etc/ipa/ca.crt satellite.rnelson-demo.com:/root/
 
