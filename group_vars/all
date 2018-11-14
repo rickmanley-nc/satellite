@@ -15,7 +15,7 @@ satellite_ip: 192.168.126.2
 satellite_rdns: 126.168.192.in-addr.arpa
 satellite_dhcp_range: "192.168.126.150 192.168.126.200"
 satellite_nic: ens3 ##may need to change to eth0
-satellite_manifest_filename: manifest-rnelson-sales-6.3.zip
+satellite_manifest_filename: manifest-rnelson-sales-6.4.zip
 
 ##Satellite kickstart section#
 satellite_disk: sda ## may have to change to vda
@@ -31,13 +31,13 @@ hostgroup_root_pass: RedHat1!
 libvirt_storage_pool_name: Images
 libvirt_ip_address:        192.168.126.1
 libvirt_netmask:           255.255.255.0
-libvirt_bridge_name:       virbr3
-libvirt_network_name:      sat-isolated
+libvirt_bridge_name:       virbr5
+libvirt_network_name:      rnelson-demo
 
 satellite_repos:
   - rhel-7-server-rpms
   - rhel-server-rhscl-7-rpms
-  - rhel-7-server-satellite-6.3-rpms
+  - rhel-7-server-satellite-6.4-rpms
   - rhel-7-server-extras-rpms
   - rhel-7-server-satellite-maintenance-6-rpms
   - rhel-7-server-optional-rpms

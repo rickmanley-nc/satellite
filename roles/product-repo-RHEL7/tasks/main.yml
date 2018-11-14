@@ -11,7 +11,7 @@
   command: hammer repository update --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.4' --download-policy immediate
   tags: rhel7
 
-- name: Enable Satellite Tools 6.3 (for RHEL 7 Server)
+- name: Enable Satellite Tools 6.4 (for RHEL 7 Server)
   command: hammer repository-set enable --organization "{{satellite_organization}}" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --name 'Red Hat Satellite Tools 6.3 (for RHEL 7 Server) (RPMs)'
   tags: rhel7
 
@@ -24,7 +24,7 @@
   with_items:
     - "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server"
     - "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.4"
-    - "Red Hat Satellite Tools 6.3 for RHEL 7 Server RPMs x86_64"
+    - "Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64"
   tags: rhel7
 
 - name: Create RHEL 7 Base Content View
@@ -36,7 +36,7 @@
   with_items:
     - "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server"
     - "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.4"
-    - "Red Hat Satellite Tools 6.3 for RHEL 7 Server RPMs x86_64"
+    - "Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64"
   tags: rhel7
 
 - name: Publish Initial RHEL 7 Base Content View

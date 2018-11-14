@@ -20,8 +20,8 @@
     - "{{epel_subid.stdout}}"
   tags: activation-key
 
-- name: Enable Sat Tools 6.3 channel in Development Activation Key
-  command: hammer activation-key content-override --name ak-Reg_To_Development-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.3-rpms --value 1
+- name: Enable Sat Tools 6.4 channel in Development Activation Key
+  command: hammer activation-key content-override --name ak-Reg_To_Development-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.4-rpms --value 1
   tags: activation-key
 
 - name: Create RHEL Activation Key for Lab guests
@@ -33,5 +33,5 @@
   tags: activation-key
 
 - name: Enable Sat Tools 6.3 channel in Lab Activation Key
-  command: hammer activation-key content-override --name ak-Reg_To_Lab-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.3-rpms --value 1
+  command: hammer activation-key content-override --name ak-Reg_To_Lab-rhel7 --organization "{{satellite_organization}}" --content-label rhel-7-server-satellite-tools-6.4-rpms --value 1
   tags: activation-key

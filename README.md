@@ -1,5 +1,5 @@
-# Deploy and Configure Satellite 6.3
-This repo is dedicated to building a Satellite 6.3 VM on LibVirt KVM through a series of Ansible playbooks. If you've used the previous Operations repo, consider that version 1.0. This is version 2.0, and is much more user-friendly. The original intent was to just learn how to use Ansible effectively while also needing to have a reliable Satellite 6 environment that was "rinse and repeat". This is something that I can use to demonstrate on my local laptop regardless of internet connectivity.
+# Deploy and Configure Satellite 6.4
+This repo is dedicated to building a Satellite 6.4 VM on LibVirt KVM through a series of Ansible playbooks. If you've used the previous Operations repo, consider that version 1.0. This is version 2.0, and is much more user-friendly. The original intent was to just learn how to use Ansible effectively while also needing to have a reliable Satellite 6 environment that was "rinse and repeat". This is something that I can use to demonstrate on my local laptop regardless of internet connectivity.
 
 I cannot take all the credit. I've learned from many folks within Red Hat and Ansible as well as our customers, and users in the community. Thank you all!
 
@@ -13,9 +13,7 @@ After kicking off the playbook (on a decent wifi connection, this will take just
  - Content View filters for EPEL7
  - Red Hat Insights
  - OpenSCAP scanning and reporting against a Standard Policy system and a STIG policy
- - When installed with IdM integration... RBAC,
- - More to come... Ansible Tower integration, Gluster integration, OpenShift integration
-
+ - When installed with IdM integration... RBAC, LDAP, Kerb Auth, SSO
 
 ## Requirements and Steps
 
@@ -34,8 +32,6 @@ After kicking off the playbook (on a decent wifi connection, this will take just
 
 
 ## Gotchas!
-
-I'll keep this updated with current gotchas that you'll have to be mindful of before having a successful deploy.
 
 - Once you have your manifest, you'll need to verify which subscriptions are attached to the activation keys in `roles/activation-keys/tasks/main.yml`. We're using hammer output to search for the RHEL Server Premium and EPEL subscriptions. This can be restructured to search for any other subscriptions by changing the '--search' argument.
 
@@ -68,18 +64,13 @@ I'll keep this updated with current gotchas that you'll have to be mindful of be
 - provision-libvirt
 - ansible-tower-sync-prep
 
-
-## Variables
-
 ## Remaining Items to Complete
 
 - Breakout list of subscriptions and SKUs needed for this environment. (RHEL Server, Gluster, JBoss EAP)
 - Fix LAB activation key (currently doesn't have EAP subscription)
 - Go goferless: https://access.redhat.com/articles/3154811
-- Enable remote execution
 - Need to manually update Remote Execution on subnet. Hammer commands do not currently exist and there is no API: https://bugzilla.redhat.com/show_bug.cgi?id=1370460, http://projects.theforeman.org/issues/15249, http://projects.theforeman.org/issues/21231
 - Need to manually update Compute Profiles to point to correct libvirt network, and storage point for VM disk. Hammer commands do not currently exist, and there is no API: https://projects.theforeman.org/issues/6344
-- Copy existing partition templates and make a role for STIG builds. After importing template, will need to run the following command to add OS version: # hammer partition-table add-operatingsystem --name "Kickstart default - STIG" --operatingsystem "RedHat 7.4"
 - Need to enable ansible-tower-sync-prep role with users locked to lifecycle environments.
 
 ## License
